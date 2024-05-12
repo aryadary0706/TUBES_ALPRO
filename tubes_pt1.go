@@ -2,13 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"os"
 )
-
-type ttl struct {
-	tanggal, bulan, tahun int
-}
 
 type tanggal struct {
 	tanggal, bulan, tahun int
@@ -19,145 +14,240 @@ type nama struct {
 }
 
 type atributPasien struct {
-	id string
-	Name nama
-	umur int
-	gender string
-	TTL ttl
-	beratBadan, tinggiBadan int
-	TDS, TDD int
-	Detakjantung int
-	kondisi1, kondisi2, kondisi3 string
-	hasilBMI int
-	kunjungan tanggal
+	id                      string
+	Name                    nama
+	umur                    int
+	gender                  string
+	TTL                     tanggal
+	beratBadan, tinggiBadan float64
+	TDS, TDD                int
+	diagnosaBMI, diagnosaTD string
+	hasilBMI                float64
+	kunjungan               tanggal
 }
 
-type Pasien[999]atributPasien
+const NMAX int = 1000
 
-func main(){
+type Pasien [NMAX]atributPasien
+
+func main() {
+	//UI Interface
+	var P Pasien
 	var pilihan, pilihan_2, category int
-	var urut int
 	var n int
 	n = 0
-	urut = 1
 
-	for pilihan == 1 || pilihan == 2 || pilihan == 3 || pilihan == 0{
-	fmt.Println("Kamu adalah pasien ke - ", urut)
-	fmt.Println("--------------------------------------------")
-	fmt.Println("1. Cek Kesehatan Pasien")
-	fmt.Println("2. Tammpilkan Data Pasien")
-	fmt.Println("3. Edit Data Pasien(MASIH DIBUAT)")
-	fmt.Println("4. Close")
-	fmt.Println("--------------------------------------------")
-	fmt.Println("Pilih nomor di atas")
-	fmt.Scan(&pilihan)
-	if pilihan == 1 {
-		cekKesehatan(&Pasien, &n)
-	}else if pilihan == 2 {
-		fmt.Println("1. Tampilkan semua data")
-		fmt.Println("2. Tampilkan berdasarkan kategori yang diinginkan")
-		fmt.Println("3. Tampilkan data terurut")
-		fmt.Scan(&pilihan_2)
-		if pilihan_2 == 1 {
-			ShowAllData(Pasien, n)
-		}else if pilihan_2 == 2 {
-			// Menampilkan data yang sesuai dengan kategori spesifik yang dipilih di prosedur. Contoh: Umur 19, menampilkan pasien yang hanya umur 19
-			fmt.Println("Pilih Kategori Data:")
-			fmt.Println("1. Umur")
-			fmt.Println("2. Kondisi")
-			fmt.Println("3. Tahun berkunjung")
-			fmt.Scan(&category)
-			if category == 1 {
-				ShowDataByUmur(Pasien, n)
-			}else if category == 2 {
-				ShowDataByKondisi(Pasien, n)
-			}else if category == 3 {
-				ShowDataByYear(Pasien, n)
+	for pilihan == 1 || pilihan == 2 || pilihan == 3 || pilihan == 0 {
+		fmt.Println("================================================")
+		fmt.Printf("                  RUMAH SAKIT                      \n")
+		fmt.Println("================================================")
+		fmt.Println("Kamu adalah pasien ke-", n+1)
+		fmt.Println("Silahkan Pilih menu berikut: ")
+		fmt.Println("1. Cek Kesehatan")
+		fmt.Println("2. Tampilkan Data Pasien")
+		//fmt.Println("3. Edit Data Pasien")
+		//OTW dibuat
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("Program akan berhenti jika memilih angka selain di menu")
+		fmt.Print("Masukkan angka: ")
+		fmt.Scan(&pilihan)
+		if pilihan == 1 {
+			if n < NMAX {
+				cekKesehatan(&P, n)
+				n = n + 1
+			} else {
+				fmt.Print("Kapasitas Pasien Penuh")
 			}
-		}else if pilihan == 3 {
-			ShowSortedData(Pasien, n)
+		} else if pilihan == 2 {
+			fmt.Println("Pilih data berikut:")
+			fmt.Println("1. 1. Tampilkan semua data")
+			fmt.Println("2. Tampilkan berdasarkan kategori")
+			fmt.Println("3. Tampilkan data dari yang terkini")
+			fmt.Scan(&pilihan_2)
+			if pilihan_2 == 1 {
+				ShowData(P, n)
+			} else if pilihan_2 == 2 {
+				//hanya menampilkan data yang sesuai dengan kategori spesifik dari input
+				fmt.Println()
+				fmt.Println("Pilih Kategori Data:")
+				fmt.Println("1. Umur")
+				fmt.Println("2. gender")
+				fmt.Println("3. Tahun berkunjung")
+				fmt.Scan(&category)
+				for category != 1 || category != 2 && category != 3 {
+					fmt.Println("Masukan tidak valid")
+					fmt.Scan(&cateegory)
+				}
+				if category == 1 {
+					MakeDataBasedAge(P, n)
+				} else if category == 2 {
+					MakeDataBasedGender(P, n)
+				} else if category == 3 {
+					MakeDataBasedYear(P, n)
+				}
+			} else if pilihan_2 == 3 {
+				MakeSortedData
+			}
 		}
-	}else if pilihan == 3 {
-		fmt.Println("Pilih rekayasa data: 1. Edit, 2. Delete")
 	}
-}
+	fmt.Println("Program sudah selesai")
 }
 
-func cekKesehatan(P Pasien, n int){
+func cekKesehatan(P *Pasien, n int) {
 	/*
-	Baca data pasien
+		Baca data pasien
 	*/
-	if n >= 1 && n <= 9 {
-		P[n].id = "00" + string(n)
-	}else if n >=10 && n <= 99 {
-		P[n].id = "0" + string(n)
-	}else{
-		P[n].id = string(n)
+	if n+1 >= 1 && n+1 <= 9 {
+		P[n].id = fmt.Sprintf("00%d", n+1)
+	} else if n+1 >= 10 && n+1 <= 99 {
+		P[n].id = fmt.Sprintf("0%d", n+1)
+	} else {
+		P[n].id = fmt.Sprintf("%d", n+1)
 	}
-	fmt.Println("id: ", id)
+	fmt.Println("id: ", P[n].id)
 	fmt.Println("Masukkan nama (terdiri dari nama depan dan nama belakang):")
-	fmt.Scanln(&P[n].Firstname, &P[n].lastname)
-	fmt.Println("Masukkan gender:")
-	fmt.Println(&P[n].gender)
-	fmt.Println("Masukkan TTL dan domisili:")
-	fmt.Println("format:(tgl) (bln) (thn) (dom)")
-	fmt.Scanln(&P[n].Tgl, &P[n].bln, &P[n].thn, &P[n].domisili)
+	fmt.Scan(&P[n].Name.Firstname, &P[n].Name.lastname)
+	fmt.Println("Masukkan gender(Male/Female):")
+	fmt.Scan(&P[n].gender)
+	fmt.Println("Masukkan Tanggal Lahir:")
+	fmt.Println("(format: DD MM YYYY)")
+	fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
 	fmt.Println("Masukkan tanggal kedatangan:")
-	fmt.Scanln(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
+	fmt.Println("format: DD MM YYYY")
+	fmt.Scan(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
 	fmt.Println("Masukkan berat badan, tinggi badan:")
-	fmt.Scanln(&P[n].beratBadan, &P[n].tinggiBadan)
+	fmt.Scan(&P[n].beratBadan, &P[n].tinggiBadan)
 	fmt.Println("Masukkan tekanan darah sistolik dan diastolik:")
-	fmt.Scanln(&P[n].TDS, &P[n].TDS)
-	fmt.Println("Masukkan Detak Jantung:")
-	fmt.Scanln(&P[n].Detakjantung)
+	fmt.Scan(&P[n].TDS, &P[n].TDD)
 
-	P[n].umur = Hitungumur(P[n].Tgl, P[n].bln, P[n].thn, P[n].kunjungan.tanggal, P[n].kunjungan.bulan, P[n].kunjungan.tahun)
+	P[n].umur = hitungUmur(P[n].TTL.tanggal, P[n].TTL.bulan, P[n].TTL.tahun, P[n].kunjungan.tanggal, P[n].kunjungan.bulan, P[n].kunjungan.tahun)
 
-	P[n].kondisi1, P[n].kondisi2, P[n].kondisi3 = PeriksaKesehatan(P[n].beratBadan, P[n].tinggiBadan, P[n].hasilBMI, P[n].tekananDarah, P[n].TDS,P[n].TDD , P[n].umur)
+	Diagnosa(P, n)
+
 }
 
-
-func PeriksaKesehatan(BB, TB, TD, TDS, TDD, U int) (string, string, string){
+func Diagnosa(P *Pasien, n int) {
 	var BMI float64
-
-	BMI = float64(BB) / math.Pow(float64(TB), 2.0)
-	if BMI >= 30.0 {
-		return "Obesitas"
-	}else if BMI >= 25.0 && BMI < 30.0 {
-		return "Overweight"
-	}else if BMI >= 18.5 && BMI < 30{
-		return "Normal"
-	}else{
-		return "Underweight"
+	BMI = (P[n].beratBadan / (P[n].tinggiBadan * P[n].tinggiBadan)) * 10000
+	if BMI >= 30 {
+		P[n].diagnosaBMI = "Obesitas"
+	} else if BMI < 30 && BMI >= 23 {
+		P[n].diagnosaBMI = "Berat badan berlebih"
+	} else if BMI < 23 && BMI >= 18.5 {
+		P[n].diagnosaBMI = "Berat badan Ideal"
+	} else if BMI < 18.5 {
+		P[n].diagnosaBMI = "Berat badan kurang"
 	}
+	P[n].hasilBMI = BMI
 
-
+	if P[n].TDS > 180 && P[n].TDD > 120 {
+		P[n].diagnosaTD = "Krisis Hipertensi"
+	} else if P[n].TDS > 140 && P[n].TDD > 90 {
+		P[n].diagnosaTD = "Hipertensi Derajat 2"
+	} else if (P[n].TDS >= 130 && P[n].TDS < 140) && (P[n].TDD >= 80 && P[n].TDD < 90) {
+		P[n].diagnosaTD = "Hipertensi Derajat 1"
+	} else if (P[n].TDS >= 120 && P[n].TDS < 130) && (P[n].TDD < 80) {
+		P[n].diagnosaTD = "Prahipertensi"
+	} else if (P[n].TDS < 120 && P[n].TDS >= 90) && (P[n].TDD < 80 && P[n].TDD >= 60) {
+		P[n].diagnosaTD = "Normal"
+	} else if P[n].TDS < 90 && P[n].TDD < 60 {
+		P[n].diagnosaTD = "Hipotensi"
+	} else {
+		P[n].diagnosaTD = "Data tidak valid"
+	}
 }
 
-func hitungUmur(tl, bl, yl, tk, bk, yk int)int{
-/*
-Mengeluarkan nilai umur bertipe integer dari operasi dan percabangan variabel tl(tanggal lahir), bl(bulan lahir), yl(tahun lahir), tk(tahun kunjungan), bk (bulan kunjungan), yk (tahun kunjungan bertipe integer.)
-*/ 
+func hitungUmur(tl, bl, yl, tk, bk, yk int) int {
+	/*
+		Mengeluarkan nilai umur bertipe integer dari operasi dan percabangan variabel tl(tanggal lahir), bl(bulan lahir), yl(tahun lahir), tk(tahun kunjungan), bk (bulan kunjungan), yk (tahun kunjungan bertipe integer.)
+	*/
 	var umur int
 	umur = yk - yl
 	if bl > bk {
 		umur -= 1
-	}else if tl < tk {
+	} else if tl < tk {
 		umur -= 1
-	}else{
+	} else {
 		umur = umur
 	}
 	return umur
-	}
+}
 
-func ShowAllData(P Pasien, n int){
+func ShowData(P Pasien, n int) {
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("-----------------------------------------------------")
+	fmt.Printf("Terdapat %d pasien yang terdata, sebagai berikut: \n", n)
+	fmt.Println("-----------------------------------------------------")
 	for i := 0; i < n; i++ {
-		fmt.Println("-----------------------------------------------------------")
-		fmt.Println("Nama: ", P[i].Name.Firstname, P[i].Name.lastname)
+		fmt.Println("ID:", P[i].id)
+		fmt.Println("Nama:", P[i].Name.Firstname, P[i].Name.lastname)
 		fmt.Println("Umur:", P[i].umur)
-		fmt.Println("Kelamin/gender: ", P[i].gender)
-		fmt.Println("Tanggal lahir:", P[n].TTL.tanggal, P[n].TTL.bulan, P[n].TTL.tahun)
-		fmt.Println("Domisili:", P[i].domisili)
-		fmt.Println("")
+		fmt.Println("Gender:", P[i].gender)
+		fmt.Println("Tanggal Lahir:", P[i].TTL.tanggal, "/", P[i].TTL.bulan, "/", P[i].TTL.tahun)
+		fmt.Println("Tanggal Kunjungan:", P[i].kunjungan.tanggal, "/", P[i].kunjungan.bulan, "/", P[i].kunjungan.tahun)
+		fmt.Println("Berat Badan:", P[i].beratBadan)
+		fmt.Println("Tinggi Badan:", P[i].tinggiBadan)
+		fmt.Println("Diagnosa BMI:", P[i].diagnosaBMI)
+		fmt.Println("Diagnosa Tekanan Darah:", P[i].diagnosaTD)
+		fmt.Printf("Hasil BMI: %.2f \n", P[i].hasilBMI)
+		fmt.Println("---------------------")
 	}
+}
+
+func MakeDataBasedAge(P pasien, n int) {
+	var B Pasien
+	var m int
+	m = 0
+	var age int
+	fmt.Scan(&age)
+	for i := 0; i < n; i++ {
+		if P[i].umur == age {
+			B[m] = P[i]
+			m++
+		}
+	}
+	ShowData(B, m)
+}
+
+func MakeDataBasedGender(P Pasien, n int) {
+	var C Pasien
+	var m int
+	m = 0
+	var gender string
+	fmt.Println("Male/Female?")
+	for i := 0; i < n; i++ {
+		if P[i].gender == gender {
+			C[m] = P[i]
+			m++
+		}
+	}
+	ShowAllData(C, m)
+}
+
+func MakeDataBasedYear(P Pasien, n int) {
+	var D Pasien
+	var m int
+	m = 0
+	var year int
+	fmt.Scan(&year)
+	for i := 0; i < n; i++ {
+		if P[i].kunjungan.tanggal == year {
+			D[m] = P[i]
+			m++
+		}
+	}
+	ShowData(B, m)
+}
+
+func MakeSortedData(P Pasien, n int) {
+	var E pasien
+	var m int
+	m = 0
+	for i := 0; i < n; i++ {
+		E[m] = P[n-1-i]
+		m++
+	}
+	ShowData(E, m)
 }
