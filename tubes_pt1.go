@@ -13,7 +13,7 @@ type nama struct {
 }
 
 type atributPasien struct {
-	id                      string
+	id                      int
 	Name                    nama
 	umur                    int
 	gender                  string
@@ -38,9 +38,14 @@ func main() {
 
 	for pilihan == 1 || pilihan == 2 || pilihan == 0 || pilihan == 3 {
 		fmt.Println("================================================")
-		fmt.Printf("                  RUMAH SAKIT                      \n")
+		fmt.Println("         _       _ _         __  _       _ _        _")
+		fmt.Println("  /\\ /\\ (_)_ __ (_) | __    /  \\(_) __ _(_) |_ __ _| |")
+		fmt.Println(" / //_/ | | '_ \\| | |/ /   / /\\ / |/ _` | | __/ _` | |")
+		fmt.Println("/ __ \\| | | | | | |   <   / /_//| | (_| | | || (_| | |")
+		fmt.Println("\\/  \\/|_|_|_| |_|_|_|\\_\\ /___,/ |_|\\__, |_|\\__\\__,_|_|")
+		fmt.Println("                                   |___/              ")
 		fmt.Println("================================================")
-		fmt.Println("Kamu adalah pasien ke-", n+1)
+		fmt.Println("No. Urut Pasien", n+1)
 		fmt.Println("Silahkan Pilih menu berikut: ")
 		fmt.Println("1. Cek Kesehatan")
 		fmt.Println("2. Tampilkan Data Pasien")
@@ -112,33 +117,74 @@ func cekKesehatan(P *Pasien, n int) {
 	/*
 		Baca data pasien
 	*/
-	if n+1 >= 1 && n+1 <= 9 {
-		P[n].id = fmt.Sprintf("00%d", n+1)
-	} else if n+1 >= 10 && n+1 <= 99 {
-		P[n].id = fmt.Sprintf("0%d", n+1)
-	} else {
-		P[n].id = fmt.Sprintf("%d", n+1)
-	}
-	fmt.Println("id: ", P[n].id)
 	fmt.Println("Masukkan nama (terdiri dari nama depan dan nama belakang):")
-	fmt.Scan(&P[n].Name.Firstname, &P[n].Name.lastname)
+	fmt.Print("Nama Depan: ")
+	fmt.Scan(&P[n].Name.Firstname)
+	fmt.Print("Nama Belakang: ")
+	fmt.Scan(&P[n].Name.lastname)
+	
 	fmt.Println("Masukkan gender(Male/Female):")
 	fmt.Scan(&P[n].gender)
+
+	for P[n].gender != "Male" && P[n].gender != "Female" {
+		fmt.Println("Input tidak terbaca. Masukkan kembali:")
+		fmt.Scan(&P[n].gender)
+	}
+
 	fmt.Println("Masukkan Tanggal Lahir:")
 	fmt.Println("(format: DD MM YYYY)")
 	fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
+
+	if !(VerifDate(P[n].TTL)) || P[n].TTL.tanggal < P[n-1].TTL.tanggal && P[n].TTL.bulan < P[n-1].TTL.bulan && P[n].TTL.tahun < P[n-1].TTL.tahun{
+		fmt.Println("Input tanggal tidak Sesuai!. Masukkan kembali")
+		fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
+	}
+
 	fmt.Println("Masukkan tanggal kedatangan:")
 	fmt.Println("format: DD MM YYYY")
 	fmt.Scan(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
+
+	if !(VerifDate(P[n].kunjungan)) || P[n].kunjungan.tanggal < P[n-1].kunjungan.tanggal && P[n].kunjungan.bulan < P[n-1].kunjungan.bulan && P[n].kunjungan.tahun < P[n-1].kunjungan.tahun{
+		fmt.Println("Input tanggal tidak Sesuai!. Masukkan kembali")
+		fmt.Scan(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
+	}
+
 	fmt.Println("Masukkan berat badan, tinggi badan:")
-	fmt.Scan(&P[n].beratBadan, &P[n].tinggiBadan)
+	fmt.Print("Berat Badan (kg): ")
+	fmt.Scan(&P[n].beratBadan)
+	fmt.Print("Tinggi badan (m): ")
+	fmt.Scan(&P[n].tinggiBadan)
+
 	fmt.Println("Masukkan tekanan darah sistolik dan diastolik:")
-	fmt.Scan(&P[n].TDS, &P[n].TDD)
+	fmt.Print("Tekanan darah Sistolik (mmHg): ")
+	fmt.Scan(&P[n].TDS)
+	fmt.Print("Tekanan darah Sistolik (mmHg): ")
+	fmt.Scan(&P[n].TDD)
+
+	BuatId(P, n)
 
 	P[n].umur = hitungUmur(P[n].TTL.tanggal, P[n].TTL.bulan, P[n].TTL.tahun, P[n].kunjungan.tanggal, P[n].kunjungan.bulan, P[n].kunjungan.tahun)
 
 	Diagnosa(P, n)
+}
 
+func BuatId(P *Pasien, n int) {
+	var date int
+	date = n
+	if n > 0 {
+		if P[n].kunjungan.tahun != P[n-1].kunjungan.tahun || P[n].kunjungan.bulan != P[n-1].kunjungan.bulan || P[n].kunjungan.tanggal != P[n-1].kunjungan.tanggal {
+			date = 0
+		}
+	}
+	P[n].id = (P[n].kunjungan.tahun%100) * 100000000 + P[n].kunjungan.bulan * 1000000 + P[n].kunjungan.tanggal * 10000 + (date+1)
+}
+
+func VerifDate(P Pasien, n int) bool{
+	if (P[n].TTL.tanggal >= 1 && P[n].TTL.tanggal <= 31) && (P[n].TTL.bulan >= 1 && P[n].TTL.bulan <= 12) {
+		return true
+	}else{
+		return false
+	}
 }
 
 func Diagnosa(P *Pasien, n int) {
@@ -192,11 +238,12 @@ func ShowData(P Pasien, n int) {
 	if n > 0 {
 		fmt.Println()
 		fmt.Println()
-		fmt.Println("-----------------------------------------------------")
-		fmt.Printf("Terdapat %d pasien yang terdata, sebagai berikut: \n", n)
-		fmt.Println("-----------------------------------------------------")
+		fmt.Println()
 		for i := 0; i < n; i++ {
-			fmt.Println("ID:", P[i].id)
+			
+			fmt.Println("-----------------------------------------------------")
+			fmt.Printf("No. ID:  %d\n", P[i].id)
+			fmt.Println("-----------------------------------------------------")
 			fmt.Println("Nama:", P[i].Name.Firstname, P[i].Name.lastname)
 			fmt.Println("Umur:", P[i].umur)
 			fmt.Println("Gender:", P[i].gender)
@@ -207,7 +254,7 @@ func ShowData(P Pasien, n int) {
 			fmt.Println("Diagnosa BMI:", P[i].diagnosaBMI)
 			fmt.Println("Diagnosa Tekanan Darah:", P[i].diagnosaTD)
 			fmt.Printf("Hasil BMI: %.2f \n", P[i].hasilBMI)
-			fmt.Println("---------------------")
+			fmt.Println("----------------------------------------------------")
 		}
 	} else {
 		fmt.Println("Data tidak ditemukan.")
@@ -236,6 +283,7 @@ func MakeDataBasedGender(P Pasien, n int) {
 	m = 0
 	var gender string
 	fmt.Println("Male/Female?")
+	fmt.Scan(&gender)
 	for i := 0; i < n; i++ {
 		if P[i].gender == gender {
 			C[m] = P[i]
@@ -275,9 +323,9 @@ func MakeSortedData(P Pasien, n int) {
 
 //fungsi ini masih BELUM DICOBA (BELUM DIRUN)
 
-/*
+
 func EditData(P *Pasien, n int) {
-	var id string
+	var id int
 	fmt.Println("Masukkan ID pasien yang ingin diedit:")
 	fmt.Scan(&id)
 
@@ -349,7 +397,7 @@ func EditData(P *Pasien, n int) {
 }
 
 func DeleteData(P *Pasien, n *int) {
-	var id string
+	var id int
 	fmt.Println("Masukkan ID pasien yang ingin dihapus:")
 	fmt.Scan(&id)
 
@@ -372,5 +420,3 @@ func DeleteData(P *Pasien, n *int) {
 		fmt.Println("ID pasien tidak ditemukan.")
 	}
 }
-
-*/
