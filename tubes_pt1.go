@@ -2,19 +2,17 @@ package main
 
 import (
 	"fmt"
+	// "os"
+	// "os/exec"
 )
 
 type tanggal struct {
 	tanggal, bulan, tahun int
 }
 
-type nama struct {
-	Firstname, lastname string
-}
-
 type atributPasien struct {
 	id                      int
-	Name                    nama
+	Name                    string
 	umur                    int
 	gender                  string
 	TTL                     tanggal
@@ -45,7 +43,6 @@ func main() {
 		fmt.Println("\\/  \\/|_|_|_| |_|_|_|\\_\\ /___,/ |_|\\__, |_|\\__\\__,_|_|")
 		fmt.Println("                                   |___/              ")
 		fmt.Println("================================================")
-		fmt.Println("No. Urut Pasien", n+1)
 		fmt.Println("Silahkan Pilih menu berikut: ")
 		fmt.Println("1. Cek Kesehatan")
 		fmt.Println("2. Tampilkan Data Pasien")
@@ -82,7 +79,7 @@ func main() {
 				for category != 1 && category != 2 && category != 3 {
 					fmt.Println("Masukan tidak valid")
 					fmt.Scan(&category)
-				}
+				} 
 				if category == 1 {
 					MakeDataBasedAge(P, n)
 				} else if category == 2 {
@@ -90,10 +87,11 @@ func main() {
 				} else if category == 3 {
 					MakeDataBasedYear(P, n)
 				}
+				
 			} else if pilihan_2 == 3 {
 				MakeSortedData(P, n)
 			}
-		}else if pilihan == 3 {
+		} else if pilihan == 3 {
 			fmt.Println("Pilih jenis rekayasa data: ")
 			fmt.Println("1. Edit Data Pasien")
 			fmt.Println("2. Hapus data Pasien")
@@ -105,24 +103,23 @@ func main() {
 			}
 			if pilihan_3 == 1 {
 				EditData(&P, n)
-			}else if pilihan_3 == 2 {
+			} else if pilihan_3 == 2 {
 				DeleteData(&P, &n)
 			}
 		}
 	}
 	fmt.Println("Program sudah selesai")
-}
+	}
+
+
 
 func cekKesehatan(P *Pasien, n int) {
 	/*
 		Baca data pasien
 	*/
-	fmt.Println("Masukkan nama (terdiri dari nama depan dan nama belakang):")
-	fmt.Print("Nama Depan: ")
-	fmt.Scan(&P[n].Name.Firstname)
-	fmt.Print("Nama Belakang: ")
-	fmt.Scan(&P[n].Name.lastname)
-	
+	fmt.Println("Masukkan nama (Akhiri dengan titik(.)):")
+	buatNama(P, n)
+
 	fmt.Println("Masukkan gender(Male/Female):")
 	fmt.Scan(&P[n].gender)
 
@@ -135,16 +132,18 @@ func cekKesehatan(P *Pasien, n int) {
 	fmt.Println("(format: DD MM YYYY)")
 	fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
 
-	if !(VerifDate(P[n].TTL)) || P[n].TTL.tanggal < P[n-1].TTL.tanggal && P[n].TTL.bulan < P[n-1].TTL.bulan && P[n].TTL.tahun < P[n-1].TTL.tahun{
-		fmt.Println("Input tanggal tidak Sesuai!. Masukkan kembali")
-		fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
+	if n > 0 && !(VerifDate(P[n].TTL)){
+		
+			fmt.Println("Input tanggal tidak Sesuai!. Masukkan kembali")
+			fmt.Scan(&P[n].TTL.tanggal, &P[n].TTL.bulan, &P[n].TTL.tahun)
+		
 	}
 
 	fmt.Println("Masukkan tanggal kedatangan:")
 	fmt.Println("format: DD MM YYYY")
 	fmt.Scan(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
 
-	if !(VerifDate(P[n].kunjungan)) || P[n].kunjungan.tanggal < P[n-1].kunjungan.tanggal && P[n].kunjungan.bulan < P[n-1].kunjungan.bulan && P[n].kunjungan.tahun < P[n-1].kunjungan.tahun{
+	if n > 0 && !(VerifDate(P[n].kunjungan)) && !(ADVerifDate(P, n)){
 		fmt.Println("Input tanggal tidak Sesuai!. Masukkan kembali")
 		fmt.Scan(&P[n].kunjungan.tanggal, &P[n].kunjungan.bulan, &P[n].kunjungan.tahun)
 	}
@@ -172,22 +171,55 @@ func BuatId(P *Pasien, n int) {
 	var date int
 	date = n
 	if n > 0 {
-		if P[n].kunjungan.tahun != P[n-1].kunjungan.tahun || P[n].kunjungan.bulan != P[n-1].kunjungan.bulan || P[n].kunjungan.tanggal != P[n-1].kunjungan.tanggal {
+		if P[n].kunjungan.tahun > P[n-1].kunjungan.tahun || P[n].kunjungan.bulan > P[n-1].kunjungan.bulan || P[n].kunjungan.tanggal > P[n-1].kunjungan.tanggal {
 			date = 0
 		}
 	}
-	P[n].id = (P[n].kunjungan.tahun%100) * 100000000 + P[n].kunjungan.bulan * 1000000 + P[n].kunjungan.tanggal * 10000 + (date+1)
+	P[n].id = (P[n].kunjungan.tahun%100)*100000000 + P[n].kunjungan.bulan*1000000 + P[n].kunjungan.tanggal*10000 + (date + 1)
 }
 
-func VerifDate(P Pasien, n int) bool{
-	if (P[n].TTL.tanggal >= 1 && P[n].TTL.tanggal <= 31) && (P[n].TTL.bulan >= 1 && P[n].TTL.bulan <= 12) {
+func VerifDate(Date tanggal) bool {
+	if (Date.tanggal >= 1 && Date.tanggal <= 31) && (Date.bulan >= 1 && Date.bulan <= 12) {
 		return true
-	}else{
+	} else {
 		return false
 	}
 }
 
+func ADVerifDate(P *Pasien, n int) bool {
+	if P[n].kunjungan.tanggal >=  P[n-1].kunjungan.tanggal {
+		return true
+	}else{
+		if P[n].kunjungan.bulan >= P[n-1].kunjungan.bulan {
+			return true
+		}else{
+			if P[n].kunjungan.tahun >= P[n-1].kunjungan.tahun {
+				return true
+			}else{
+				return false
+			}
+		}
+	}
+}
+
+func buatNama(P *Pasien, n int) {
+	var inp byte
+	var sentinel bool
+
+	for !sentinel {
+		fmt.Scanf("%c", &inp)
+
+		if inp == '.' {
+			sentinel = true
+		} else if (inp >= 'a' && inp <= 'z') || (inp >= 'A' && inp <= 'Z') || inp == ' '{
+			P[n].Name += string(inp)
+		}
+	}
+}
+
 func Diagnosa(P *Pasien, n int) {
+	//I.S  Prosedur terdefinisi array P sebanyak n
+	//F.S. terdefinisi nilai di P[n].diagnosaBMI dan P[n].diagnosaTD
 	var BMI float64
 	BMI = (P[n].beratBadan / (P[n].tinggiBadan * P[n].tinggiBadan)) * 10000
 	if BMI >= 30 {
@@ -240,11 +272,11 @@ func ShowData(P Pasien, n int) {
 		fmt.Println()
 		fmt.Println()
 		for i := 0; i < n; i++ {
-			
+
 			fmt.Println("-----------------------------------------------------")
 			fmt.Printf("No. ID:  %d\n", P[i].id)
 			fmt.Println("-----------------------------------------------------")
-			fmt.Println("Nama:", P[i].Name.Firstname, P[i].Name.lastname)
+			fmt.Println("Nama:", P[i].Name)
 			fmt.Println("Umur:", P[i].umur)
 			fmt.Println("Gender:", P[i].gender)
 			fmt.Println("Tanggal Lahir:", P[i].TTL.tanggal, "/", P[i].TTL.bulan, "/", P[i].TTL.tahun)
@@ -297,11 +329,11 @@ func MakeDataBasedYear(P Pasien, n int) {
 	var D Pasien
 	var m int
 	m = 0
-	var year int	
+	var year int
 	fmt.Println("Masukkan Tahun:")
 	fmt.Scan(&year)
 	for i := 0; i < n; i++ {
-		if P[i].kunjungan.tanggal == year {
+		if P[i].kunjungan.tahun == year {
 			D[m] = P[i]
 			m++
 		}
@@ -320,103 +352,133 @@ func MakeSortedData(P Pasien, n int) {
 	ShowData(E, m)
 }
 
-
 //fungsi ini masih BELUM DICOBA (BELUM DIRUN)
-
 
 func EditData(P *Pasien, n int) {
 	var id int
+	var index int
 	fmt.Println("Masukkan ID pasien yang ingin diedit:")
 	fmt.Scan(&id)
+	index = binarySearch(P, &n, id)
+	if index != -1 {
+		// Menampilkan dan memperbarui data pasien
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("Data pasien yang akan diedit:")
+		fmt.Println("ID:", P[index].id)
+		fmt.Println("Nama:", P[index].Name)
+		fmt.Println("Umur:", P[index].umur)
+		fmt.Println("Gender:", P[index].gender)
+		fmt.Println("Tanggal Lahir:", P[index].TTL.tanggal, "/", P[index].TTL.bulan, "/", P[index].TTL.tahun)
+		fmt.Println("Tanggal Kunjungan:", P[index].kunjungan.tanggal, "/", P[index].kunjungan.bulan, "/", P[index].kunjungan.tahun)
+		fmt.Println("Berat Badan:", P[index].beratBadan)
+		fmt.Println("Tinggi Badan:", P[index].tinggiBadan)
+		fmt.Println("Diagnosa BMI:", P[index].diagnosaBMI)
+		fmt.Println("Diagnosa Tekanan Darah:", P[index].diagnosaTD)
+		fmt.Printf("Hasil BMI: %.2f \n", P[index].hasilBMI)
+		fmt.Println("-----------------------------------------------")
 
-	found := false // Variabel flag untuk menandai apakah ID ditemukan atau tidak
+		// Memperbarui data pasien
+		var choice int
+		fmt.Println("Apa yang ingin Anda edit?")
+		fmt.Println("1. Nama")
+		fmt.Println("2. Gender")
+		fmt.Println("3. Tanggal Lahir")
+		fmt.Println("4. Berat Badan")
+		fmt.Println("5. Tinggi Badan")
+		//fmt.Println("6. Tekanan Darah Sistolik")
+		//fmt.Println("7. Tekanan darah Distolik")
 
-	for i := 0; i < n; i++ {
-		if P[i].id == id {
-			// Menampilkan dan memperbarui data pasien
-			found = true
-			fmt.Println("Data pasien yang akan diedit:")
-			fmt.Println("ID:", P[i].id)
-			fmt.Println("Nama:", P[i].Name.Firstname, P[i].Name.lastname)
-			fmt.Println("Umur:", P[i].umur)
-			fmt.Println("Gender:", P[i].gender)
-			fmt.Println("Tanggal Lahir:", P[i].TTL.tanggal, "/", P[i].TTL.bulan, "/", P[i].TTL.tahun)
-			fmt.Println("Tanggal Kunjungan:", P[i].kunjungan.tanggal, "/", P[i].kunjungan.bulan, "/", P[i].kunjungan.tahun)
-			fmt.Println("Berat Badan:", P[i].beratBadan)
-			fmt.Println("Tinggi Badan:", P[i].tinggiBadan)
-			fmt.Println("Diagnosa BMI:", P[i].diagnosaBMI)
-			fmt.Println("Diagnosa Tekanan Darah:", P[i].diagnosaTD)
-			fmt.Printf("Hasil BMI: %.2f \n", P[i].hasilBMI)
-			fmt.Println("---------------------")
+		fmt.Scan(&choice)
 
-			// Memperbarui data pasien
-			var choice int
-			fmt.Println("Apa yang ingin Anda edit?")
-			fmt.Println("1. Nama")
-			fmt.Println("2. Gender")
-			fmt.Println("3. Tanggal Lahir")
-			fmt.Println("4. Tanggal Kunjungan")
-			fmt.Println("5. Berat Badan")
-			fmt.Println("6. Tinggi Badan")
-	
-			fmt.Scan(&choice)
-
-			if choice == 1 {
-				fmt.Println("Masukkan nama baru (terdiri dari nama depan dan nama belakang):")
-				fmt.Scan(&P[i].Name.Firstname, &P[i].Name.lastname)
-				fmt.Println("Data berhasil diupdate!")
-			} else if choice == 2 {
-				fmt.Println("Masukkan gender baru:")
-				fmt.Scan(&P[i].gender)
-				fmt.Println("Data berhasil diupdate!")
-			} else if choice == 3 {
-				fmt.Println("Masukkan Tanggal Lahir baru (format: DD MM YYYY):")
-				fmt.Scan(&P[i].TTL.tanggal, &P[i].TTL.bulan, &P[i].TTL.tahun)
-				fmt.Println("Data berhasil diupdate!")
-			} else if choice == 4 {
-				fmt.Println("Masukkan tanggal kunjungan baru (format: DD MM YYYY):")
-				fmt.Scan(&P[i].kunjungan.tanggal, &P[i].kunjungan.bulan, &P[i].kunjungan.tahun)
-				fmt.Println("Data berhasil diupdate!")
-			} else if choice == 5 {
-				fmt.Println("Masukkan berat badan baru:")
-				fmt.Scan(&P[i].beratBadan)
-				fmt.Println("Data berhasil diupdate!")
-			} else if choice == 6 {
-				fmt.Println("Masukkan tinggi badan baru:")
-				fmt.Scan(&P[i].tinggiBadan)
-				fmt.Println("Data berhasil diupdate!")
-			}else {
-				fmt.Println("Pilihan tidak valid")
-			}
+		if choice == 1 {
+			fmt.Println("Masukkan nama baru (terdiri dari nama depan dan nama belakang):")
+			buatNama(P, index)
+			fmt.Println("Data berhasil diupdate!")
+		} else if choice == 2 {
+			fmt.Println("Masukkan gender baru:")
+			fmt.Scan(&P[index].gender)
+			fmt.Println("Data berhasil diupdate!")
+		} else if choice == 3 {
+			fmt.Println("Masukkan Tanggal Lahir baru (format: DD MM YYYY):")
+			fmt.Scan(&P[index].TTL.tanggal, &P[index].TTL.bulan, &P[index].TTL.tahun)
+			P[index].umur = hitungUmur(P[index].TTL.tanggal, P[index].TTL.bulan, P[index].TTL.tahun, P[index].kunjungan.tanggal, P[index].kunjungan.bulan, P[index].kunjungan.tahun)
+			fmt.Println("Data berhasil diupdate!")
+		} else if choice == 5 {
+			fmt.Println("Masukkan berat badan baru:")
+			fmt.Scan(&P[index].beratBadan)
+			Diagnosa(P, index)
+			fmt.Println("Data berhasil diupdate!")
+		} else if choice == 6 {
+			fmt.Println("Masukkan tinggi badan baru:")
+			fmt.Scan(&P[index].tinggiBadan)
+			Diagnosa(P, index)
+			fmt.Println("Data berhasil diupdate!")
+		} else {
+			fmt.Println("Pilihan tidak valid")
 		}
+	}else{
+		fmt.Println("Data tidak ditemukan.")
 	}
-
-	if !found {
-		fmt.Println("ID pasien tidak ditemukan.")
-	}
+			
 }
 
 func DeleteData(P *Pasien, n *int) {
-	var id int
+	var id, index int
 	fmt.Println("Masukkan ID pasien yang ingin dihapus:")
 	fmt.Scan(&id)
+	index = binarySearch(P, n, id)
+	if index != -1 {
+		for j := index; j < *n-1; j++ {
+			P[j] = P[j+1]
+		}
+		*n--
+		fmt.Println("Data Berhasil dihapus")
+	}else{
+		fmt.Println("Data tidak ditemukan.")
+		DeleteData(P, n)
+	}
+}
 
-	found := false // Variabel flag untuk menandai apakah ID ditemukan atau tidak
+func binarySearch(P *Pasien, n *int, id int) int{
+	var low, high, mid int
+	low = 0
+	high = *n-1
+	found := false
+	for low <= high && !found{
+		mid = (low+high) / 2
 
-	for i := 0; i < *n; i++ {
+		if P[mid].id == id {
+			return mid
+		}else if P[mid].id < id {
+			low = mid + 1
+		}else if P[mid].id > id {
+			high = mid - 1
+		}
+	}
+	return -1
+}
+
+func sequentialSearch(P *Pasien, n, id int) bool {
+	var found bool
+	var i int
+
+	found = false
+	i = 0
+
+	for !found && i < n {
 		if P[i].id == id {
 			found = true
-			// Geser data ke kiri untuk menutup celah
-			for j := i; j < *n-1; j++ {
-				P[j] = P[j+1]
-			}
-			*n--
-			fmt.Println("Data berhasil dihapus.")
-			break // Keluar dari loop setelah data ditemukan dan dihapus
+		} else {
+			i++
 		}
 	}
 
-	if !found {
-		fmt.Println("ID pasien tidak ditemukan.")
-	}
+	return found
 }
+
+// func clear_screen() {
+// 	c := exec.Command("cmd", "/c", "cls")
+// 	c.Stdout = os.Stdout
+// 	c.Run()
+// }
