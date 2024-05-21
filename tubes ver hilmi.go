@@ -331,6 +331,7 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 
 func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	var i int
+	var d int
 	var chunk_tanggaldari, chunk_bulandari, chunk_tahundari int
 	var chunk_tanggalke, chunk_bulanke, chunk_tahunke int
 	var s1, s2, s3 int
@@ -356,6 +357,14 @@ func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 		}
 	}
 	i = i + 1
+	fmt.Println("Pilih data yang akan di edit : ")
+	fmt.Println("ID     TANGGAL       BULAN     TAHUN")
+	fmt.Println("Data 1", P[*sesi].datakesehatan[s1].idkunjungan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s1].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tahun) 
+	fmt.Println("Data 2", P[*sesi].datakesehatan[s2].idkunjungan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s2].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tahun) 
+	fmt.Println("Data 3", P[*sesi].datakesehatan[s3].idkunjungan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s3].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tahun) 
+	fmt.Println("Masukkan Nomor :")
+	fmt.Scan(&d)
+	
 }
 
 	// func hapusdata(P *atributPasien, dbc *int, sesi *int) {
