@@ -25,6 +25,12 @@ type formattanggal struct {
 	tanggal, bulan, tahun int
 }
 
+type diagnosa struct {
+	hasil float64
+	kelompok string
+	kategori string
+}
+
 // Atribut yang mencatat data pasien
 type datapasien struct {
 	idpasien					int
@@ -42,8 +48,10 @@ type kunjungan struct {
 	idkunjungan					int
 	beratbadan, tinggibadan		float64
 	tanggalpengecekan			formattanggal
-	bmi							float64
-	tekanandarah				int
+	bmi							diagnosa
+	TD							diagnosa
+	tekanandarahSistolik     	int
+	tekanandarahDiastolik		int
 }
 
 // Atribut banyak data pasien sesuai banyak limit yang ditentukan di NMAX
@@ -321,9 +329,13 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	fmt.Scan(P[*sesi].datakesehatan[*dbk].beratbadan)
 	fmt.Print("Masukkan Tinggi Badan :")
 	fmt.Scan(P[*sesi].datakesehatan[*dbk].tinggibadan)
-	fmt.Print("Masukkan Tekanan Darah :")
-	fmt.Scan(P[*sesi].datakesehatan[*dbk].tekanandarah)
-	P[*sesi].datakesehatan[*dbk].bmi = P[*sesi].datakesehatan[*dbk].beratbadan / P[*sesi].datakesehatan[*dbk].tinggibadan * P[*sesi].datakesehatan[*dbk].tinggibadan
+	fmt.Print("Masukkan Tekanan Darah Sistolik:")
+	fmt.Scan(P[*sesi].datakesehatan[*dbk].tekanandarahSistolik)
+	fmt.Print("Masukkan Tekanan Darah Diastolik:")
+	fmt.Scan(P[*sesi].datakesehatan[*dbk].tekanandarahDiastolik)
+	// P[*sesi].datakesehatan[*dbk].bmi = P[*sesi].datakesehatan[*dbk].beratbadan / P[*sesi].datakesehatan[*dbk].tinggibadan * P[*sesi].datakesehatan[*dbk].tinggibadan
+	//enakan masukin prosedur cekKesehatan
+	cekKesehatan(P, dbk, sesi)
 	P[*sesi].datakesehatan[*dbk].idkunjungan = *dbk
 	fmt.Print("Data sudah di rekam dengan ID Rekam : ", P[*sesi].datakesehatan[*dbk].idkunjungan)
 	fmt.Print("Untuk mengecek kesehatan silahkan ke menu cek kesehatan pada halaman utama")
@@ -358,33 +370,76 @@ func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	i = i + 1
 }
 
-	// func hapusdata(P *atributPasien, dbc *int, sesi *int) {
+// func hapusdata(P *atributPasien, dbc *int, sesi *int) {
 
-	// }
+// }
 
-	// func cekkesehatan(P *atributPasien. dbk *int, sesi *int) {
-			
-	// }
+// func cekKesehatan(A *atributpasien, dbk *int, sesi *int) {
+// 	(*A)[*sesi].datakesehatan[*dbk].bmi.hasil = (*A)[*sesi].datakesehatan[*dbk].beratbadan / (((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100) * ((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+
+// 	// BMI Calculation and Categorization
+// 	switch {
+// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 17:
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat rendah"
+// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 17 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 18.5:
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat sedang"
+// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 18.5 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 25:
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "normal"
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "berat badan normal"
+// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 25 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 30:
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat rendah"
+// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 30:
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
+// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat tinggi"
+// 	}
+
+// 	sistolik := (*A)[*sesi].datakesehatan[*dbk].tekanandarahSistolik
+// 	diastolik := (*A)[*sesi].datakesehatan[*dbk].tekanandarahDiastolik
+
+// 	switch {
+// 	case sistolik < 90 && diastolik < 60:
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "rendah"
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah rendah (hipotensi)"
+// 	case sistolik >= 90 && sistolik < 120 && diastolik >= 60 && diastolik < 80:
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "normal"
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah normal"
+// 	case sistolik >= 120 && sistolik < 140 && diastolik >= 80 && diastolik < 90:
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "prahipertensi"
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (prahipertensi)"
+// 	case sistolik >= 140 && diastolik >= 90:
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "tinggi"
+// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (hipertensi)"
+// 	}
+// }
+
+//func caridata(P *atributPasien, dbk *int, dbc *int, sesi *int){
+	
+//}
+
+
 
 /*
-		fungsi search belum aku benerin parameternya
-	func binarySearch(P *Pasien, n *int, id int) int{
-	var low, high, mid int
-	low = 0
-	high = *n-1
-	found := false
-	for low <= high && !found{
-		mid = (low+high) / 2
+	fungsi search belum aku benerin parameternya
+func binarySearch(P *Pasien, n *int, id int) int{
+var low, high, mid int
+low = 0
+high = *n-1
+found := false
+for low <= high && !found{
+	mid = (low+high) / 2
 
-		if P[mid].id == id {
-			return mid
-		}else if P[mid].id < id {
-			low = mid + 1
-		}else if P[mid].id > id {
-			high = mid - 1
-		}
+	if P[mid].id == id {
+		return mid
+	}else if P[mid].id < id {
+		low = mid + 1
+	}else if P[mid].id > id {
+		high = mid - 1
 	}
-	return -1
+}
+return -1
 }
 
 func sequentialSearch(P *Pasien, n, id int) bool {
