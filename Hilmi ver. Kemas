@@ -341,7 +341,7 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	fmt.Print("Untuk mengecek kesehatan silahkan ke menu cek kesehatan pada halaman utama")
 }
 
-func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
+func editdata(P *atributpasien, dbc *int, sesi *int) {
 	var i int
 	var chunk_tanggaldari, chunk_bulandari, chunk_tahundari int
 	var chunk_tanggalke, chunk_bulanke, chunk_tahunke int
@@ -370,59 +370,102 @@ func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	i = i + 1
 }
 
-// func hapusdata(P *atributPasien, dbc *int, sesi *int) {
 
-// }
+func hapusdata(P *atributPasien, dbc *int, sesi *int) {
+	var deleted_id, i int
+	var ch string
+	var checkparameter bool
+	fmt.Println("Masukkan ID pasien: ")
+	fmt.Scan(&deleted_id)
+	checkparameter = sequentialSearch(P, dbc)
+	if checkparameter {
+		for i = 0; i < *dbc-1; i++ {
+			A[*dbc] = A[*dbc+1]
+		}
+		*dbc = *dbc - 1
+		fmt.Println("Akun kamu berhasil dihapus. Untuk bergabung kembali, kamu harus membuat akun baru")
+	}else{
+		fmt.Println("Maaf, ID tidak ditemukan. Apa kamu mau melanjutkan?")
+		fmt.Println("Y | lanjutkan hapus data")
+		fmt.Println("T | kembali ke menu")
+		fmt.Scan(&ch)
+		for ch != Y || ch != T {
+			fmt.Print("Input tidak sesuai, masukkan kembali\n")
+			fmt.Scan(&ch)
+		}
+		if ch == "Y" {
+			hapusdata(P, dbc, sesi)
+		}else{
+			return
+		}
+	}
 
-// func cekKesehatan(A *atributpasien, dbk *int, sesi *int) {
-// 	(*A)[*sesi].datakesehatan[*dbk].bmi.hasil = (*A)[*sesi].datakesehatan[*dbk].beratbadan / (((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100) * ((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+}
 
-// 	// BMI Calculation and Categorization
-// 	switch {
-// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 17:
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat rendah"
-// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 17 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 18.5:
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat sedang"
-// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 18.5 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 25:
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "normal"
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "berat badan normal"
-// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 25 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 30:
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat rendah"
-// 	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 30:
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
-// 		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat tinggi"
-// 	}
+func cekKesehatan(A *atributpasien, dbk *int, sesi *int) {
+	var chunk_BB, chunk_TB float64
+	var chunk_TDS, chunk_TDD int
+	var sistolik, diastolik int
 
-// 	sistolik := (*A)[*sesi].datakesehatan[*dbk].tekanandarahSistolik
-// 	diastolik := (*A)[*sesi].datakesehatan[*dbk].tekanandarahDiastolik
+	fmt.Println("Masukkan berat badan (kg) dan tinggi badan (cm):")
+	fmt.Scan(&chunk_BB, &chunk_TB)
+	fmt.Println("Masukkan Tekanan Darah Sistolik (mmHg) dan Tekanan darah Diastolik (mmHg):")
+	fmt.Scan(&chunk_TDS, &chunk_TDD)
 
-// 	switch {
-// 	case sistolik < 90 && diastolik < 60:
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "rendah"
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah rendah (hipotensi)"
-// 	case sistolik >= 90 && sistolik < 120 && diastolik >= 60 && diastolik < 80:
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "normal"
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah normal"
-// 	case sistolik >= 120 && sistolik < 140 && diastolik >= 80 && diastolik < 90:
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "prahipertensi"
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (prahipertensi)"
-// 	case sistolik >= 140 && diastolik >= 90:
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "tinggi"
-// 		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (hipertensi)"
-// 	}
-// }
+	if chunk_BB < 0 && chunk_TB < 0 & chunk_TDD < 0 && chunk_TDS < 0 {
+		cekKesehatan(A, dbk, sesi)
+	}
 
-//func caridata(P *atributPasien, dbk *int, dbc *int, sesi *int){
-	
-//}
+	(*A)[*sesi].datakesehatan[*dbk].beratbadan = chunk_BB
+	(*A)[*sesi].datakesehatan[*dbk].tinggibadan = chunk_TB
+	(*A)[*sesi].datakesehatan[*dbk].tekanandarahSistolik = chunk_TDS
+	(*A)[*sesi].datakesehatan[*dbk].tekanandarahDiastolik = chunk_TDD
 
+	(*A)[*sesi].datakesehatan[*dbk].bmi.hasil = (*A)[*sesi].datakesehatan[*dbk].beratbadan / (((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100) * ((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+
+	// BMI Calculation and Categorization
+	switch {
+	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 17:
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat rendah"
+	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 17 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 18.5:
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "kurus"
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kekurangan berat badan tingkat sedang"
+	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 18.5 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 25:
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "normal"
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "berat badan normal"
+	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 25 && (*A)[*sesi].datakesehatan[*dbk].bmi.hasil < 30:
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat rendah"
+	case (*A)[*sesi].datakesehatan[*dbk].bmi.hasil >= 30:
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kelompok = "gemuk"
+		(*A)[*sesi].datakesehatan[*dbk].bmi.kategori = "kelebihan berat badan tingkat tinggi"
+	}
+
+	switch {
+	case chunk_TDS < 90 && chunk_TDD < 60:
+		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "rendah"
+		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah rendah (hipotensi)"
+	case chunk_TDS >= 90 && chunk_TDS < 120 && chunk_TDD >= 60 && chunk_TDD < 80:
+		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "normal"
+		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah normal"
+	case chunk_TDS >= 120 && chunk_TDS < 140 && chunk_TDD >= 80 && chunk_TDD < 90:
+		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "prahipertensi"
+		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (prahipertensi)"
+	case chunk_TDS >= 140 && chunk_TDD >= 90:
+		(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "tinggi"
+		(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (hipertensi)"
+	}
+}
+
+
+func pengguna(P *atributPasien, dbc *int, pilihan *int, sesi *int){
+
+}
 
 
 /*
-	fungsi search belum aku benerin parameternya
+fungsi search (sequentiial dan binary) belum aku benerin parameternya
 func binarySearch(P *Pasien, n *int, id int) int{
 var low, high, mid int
 low = 0
