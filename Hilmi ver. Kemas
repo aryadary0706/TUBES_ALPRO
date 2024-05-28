@@ -405,7 +405,7 @@ func hapusdata(P *atributPasien, dbc *int, sesi *int) {
 func cekKesehatan(A *atributpasien, dbk *int, sesi *int) {
 	var chunk_BB, chunk_TB float64
 	var chunk_TDS, chunk_TDD int
-	var sistolik, diastolik int
+	
 
 	fmt.Println("Masukkan berat badan (kg) dan tinggi badan (cm):")
 	fmt.Scan(&chunk_BB, &chunk_TB)
