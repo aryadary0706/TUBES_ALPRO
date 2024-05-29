@@ -330,7 +330,7 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 }
 
 func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
-	var i int
+	var i, xubah int
 	var d int
 	var chunk_tanggaldari, chunk_bulandari, chunk_tahundari int
 	var chunk_tanggalke, chunk_bulanke, chunk_tahunke int
@@ -364,6 +364,14 @@ func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	fmt.Println("Data 3", P[*sesi].datakesehatan[s3].idkunjungan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s3].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tahun) 
 	fmt.Println("Masukkan Nomor :")
 	fmt.Scan(&d)
+	if d == 1 {
+		xubah = s1 
+	} else if d == 2 {
+		xubah = s2
+	} else if d == 3 {
+		xubah = s3
+	}
+	fmt.Println("Data yang dirubah adalah data dengan ID kunjungan :")
 	
 }
 
