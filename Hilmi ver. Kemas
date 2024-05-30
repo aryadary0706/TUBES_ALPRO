@@ -25,6 +25,13 @@ type formattanggal struct {
 	tanggal, bulan, tahun int
 }
 
+//struct yang isinya hasil2 untuk BMI dan TD
+type diagnosa struct {
+	hasil float64
+	kelompok string
+	kategori string
+}
+
 // Atribut yang mencatat data pasien
 type datapasien struct {
 	idpasien					int
@@ -40,11 +47,12 @@ type datapasien struct {
 // Atribut kunjungan untuk per user
 type kunjungan struct {
 	idkunjungan					int
-	iduser						int
-	tanggalpengecekan			formattanggal
-	tekanandarah				float64
 	beratbadan, tinggibadan		float64
-	bmi							float64
+	tanggalpengecekan			formattanggal
+	bmi							diagnosa
+	TD							diagnosa
+	tekanandarahSistolik     	int
+	tekanandarahDiastolik		int
 }
 
 // Atribut banyak data pasien sesuai banyak limit yang ditentukan di NMAX
