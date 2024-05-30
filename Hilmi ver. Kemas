@@ -527,6 +527,51 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 
 	// }
 
-	// func cekkesehatan {
+func cekKesehatan(A *atributpasien, dbk *int, dbc *int, sesi *int) {
+	var chunk_tanggal, chunk_bulan, chunk_tahun int
+	var stopper bool
+	var i int
+	var pointer = -1
+	fmt.Scan(&chunk_tanggal, &chunk_bulan, &chunk_tahun)
+	for i < *dbk && !stopper{
+		if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggal && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulan && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahun {
+			(*A)[*sesi].datakesehatan[*dbk].bmi.hasil = (*A)[*sesi].datakesehatan[*dbk].beratbadan / (((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100) * ((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+
+			switch {
+			case (*A)[*sesi].datakesehatan[i].bmi.hasil < 17:
+				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "kurus"
+				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kekurangan berat badan tingkat rendah"
+			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 17 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 18.5:
+				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "kurus"
+				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kekurangan berat badan tingkat sedang"
+			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 18.5 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 25:
+				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "normal"
+				(*A)[*sesi].datakesehatan[i].bmi.kategori = "berat badan normal"
+			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 25 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 30:
+				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "gemuk"
+				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kelebihan berat badan tingkat rendah"
+			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 30:
+				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "gemuk"
+				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kelebihan berat badan tingkat tinggi"
+			}
 		
-	// }
+			switch {
+			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 90 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik < 60:
+				(*A)[*sesi].datakesehatan[i].TD.kelompok = "rendah"
+				(*A)[*sesi].datakesehatan[i].TD.kategori = "tekanan darah rendah (hipotensi)"
+			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 90 && (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 120 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 60 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik < 80:
+				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "normal"
+				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah normal"
+			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 120 && (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 140 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 80 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik  < 90:
+				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "prahipertensi"
+				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (prahipertensi)"
+			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 140 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 90:
+				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "tinggi"
+				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (hipertensi)"
+				stopper = true
+			}else{
+				i = i+1
+			}
+		}
+	}
+}
