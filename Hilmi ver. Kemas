@@ -139,6 +139,38 @@ func interface03(sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
+func interface04(sesilogin int) {
+	fmt.Println("=====================================================")
+	fmt.Println("            APLIKASI ADMINISTRASI KESEHATAN         ")
+	fmt.Println("            RUMAH SAKIT TELKOM UNIVERTSITY        ")
+	fmt.Println("=====================================================")
+	if sesilogin != 0 {
+		fmt.Println("Anda tidak bisa masuk. Aplikasi ini dibatasi oleh staff dan admin RUMAH SAKIT TELKOM UNIVERSITY")
+	}
+	fmt.Println("-----------------------------------------------------")
+	fmt.Println("     Pilih Perintah administrasi yang tersedia       ")
+	fmt.Println("-----------------------------------------------------")
+	fmt.Println("1. Tampilkan data pasien")
+	fmt.Println("2. Hapus Akun Pasien")
+	fmt.Println("3. Edit Akun Pasien")
+	fmt.Println("4. Keluar")
+	fmt.Println("=====================================================")
+	fmt.Print("> ")
+}
+
+func interface05() {
+	fmt.Println("=====================================================")
+	fmt.Println("               DATABASE PASIEN KESEHATAN         ")
+	fmt.Println("            RUMAH SAKIT TELKOM UNIVERTSITY        ")
+	fmt.Println("=====================================================")
+	fmt.Println("<1> Tampilkan data dari Tanggal Terkini")// sort descending (selection sort)
+	fmt.Println("<2> Tampilkan data dari ID pasien")//sort ascending (insertion sort)
+	fmt.Println("<3> Check ID Pasien")//ngecek apakah ID ini aktif apa nggak,ntar ada fitur mau nampilin datanya apa kagak(binary search)
+	// Gua belum ada ide untuk sequential search
+	fmt.Println("=====================================================")
+	fmt.Print("> ")
+}
+
 // Program utama
 func main() {
 	var datapasien atributpasien
@@ -251,16 +283,23 @@ func masukpengguna(P *atributpasien, dbc *int, sesi *int) {
 	var chunk_id int
 	var chunk_password string
 
+
 	fmt.Println("Silahkan masukkan ID yang sudah terdaftar")
 	fmt.Scan(&chunk_id)
 	fmt.Println("Silahkan masukkan password sesuai ID yang sudah dimasukkan")
 	fmt.Scan(&chunk_password)
-	if P[chunk_id].password == chunk_password {
+	if chunk_id == user_Admin && P[chunk_id].password == password_Admin {
 		*sesi = -1
 		*sesi = chunk_id
+		fmt.Println("Anda login sebagai : Admin")
 		fmt.Println("Login Berhasil")
+		administration(*P, *dbc, *sesi)
+	} else if P[chunk_id].password == chunk_password {
+		*sesi = -1
+	 	*sesi = chunk_id
+	 	fmt.Println("Login Berhasil")
 		fmt.Println("Selamat datang", P[*sesi].namapasien.namadepan, P[*sesi].namapasien.namabelakang)
-	} else {
+	}else {
 		fmt.Println("ID atau Password tidak ditemukan atau tidak sesuai, harap ulangi lagi, atau hubungi petugas jika terddapat kendala")
 	}
 }
