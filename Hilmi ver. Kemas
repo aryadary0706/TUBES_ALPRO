@@ -25,13 +25,6 @@ type formattanggal struct {
 	tanggal, bulan, tahun int
 }
 
-//struct yang isinya hasil2 untuk BMI dan TD
-type diagnosa struct {
-	hasil float64
-	kelompok string
-	kategori string
-}
-
 // Atribut yang mencatat data pasien
 type datapasien struct {
 	idpasien					int
@@ -47,12 +40,11 @@ type datapasien struct {
 // Atribut kunjungan untuk per user
 type kunjungan struct {
 	idkunjungan					int
-	beratbadan, tinggibadan		float64
+	iduser						int
 	tanggalpengecekan			formattanggal
-	bmi							diagnosa
-	TD							diagnosa
-	tekanandarahSistolik     	int
-	tekanandarahDiastolik		int
+	tekanandarah				float64
+	beratbadan, tinggibadan		float64
+	bmi							float64
 }
 
 // Atribut banyak data pasien sesuai banyak limit yang ditentukan di NMAX
@@ -574,51 +566,34 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 
 	// }
 
-func cekKesehatan(A *atributpasien, dbk *int, dbc *int, sesi *int) {
-	var chunk_tanggal, chunk_bulan, chunk_tahun int
-	var stopper bool
-	var i int
-	var pointer = -1
-	fmt.Scan(&chunk_tanggal, &chunk_bulan, &chunk_tahun)
-	for i < *dbk && !stopper{
-		if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggal && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulan && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahun {
-			(*A)[*sesi].datakesehatan[*dbk].bmi.hasil = (*A)[*sesi].datakesehatan[*dbk].beratbadan / (((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100) * ((*A)[*sesi].datakesehatan[*dbk].tinggibadan / 100))
-
-			switch {
-			case (*A)[*sesi].datakesehatan[i].bmi.hasil < 17:
-				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "kurus"
-				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kekurangan berat badan tingkat rendah"
-			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 17 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 18.5:
-				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "kurus"
-				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kekurangan berat badan tingkat sedang"
-			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 18.5 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 25:
-				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "normal"
-				(*A)[*sesi].datakesehatan[i].bmi.kategori = "berat badan normal"
-			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 25 && (*A)[*sesi].datakesehatan[i].bmi.hasil < 30:
-				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "gemuk"
-				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kelebihan berat badan tingkat rendah"
-			case (*A)[*sesi].datakesehatan[i].bmi.hasil >= 30:
-				(*A)[*sesi].datakesehatan[i].bmi.kelompok = "gemuk"
-				(*A)[*sesi].datakesehatan[i].bmi.kategori = "kelebihan berat badan tingkat tinggi"
-			}
+	// func cekkesehatan {
 		
-			switch {
-			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 90 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik < 60:
-				(*A)[*sesi].datakesehatan[i].TD.kelompok = "rendah"
-				(*A)[*sesi].datakesehatan[i].TD.kategori = "tekanan darah rendah (hipotensi)"
-			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 90 && (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 120 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 60 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik < 80:
-				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "normal"
-				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah normal"
-			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 120 && (*A)[*sesi].datakesehatan[i].tekanandarahSistolik < 140 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 80 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik  < 90:
-				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "prahipertensi"
-				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (prahipertensi)"
-			case (*A)[*sesi].datakesehatan[i].tekanandarahSistolik >= 140 && (*A)[*sesi].datakesehatan[i].tekanandarahDistolik >= 90:
-				(*A)[*sesi].datakesehatan[*dbk].TD.kelompok = "tinggi"
-				(*A)[*sesi].datakesehatan[*dbk].TD.kategori = "tekanan darah tinggi (hipertensi)"
-				stopper = true
-			}else{
-				i = i+1
-			}
-		}
-	}
-}
+	// }
+
+
+// func administration(P atributpasien, dbc int, sesi int){
+// 	interface05(*sesi)
+// 	var layanan, layanan_a int
+// 	layanan = 1
+// 	fmt.Scan(&layanan)
+// 	for layanan != 1 && layanan != 2 && layanan != 3 && layanan != 4 {
+// 		fmt.Println("status: input kembali")
+// 		fmt.Scan(&layanan)
+// 	}
+// 	if layanan == 1 {
+// 		interface05()
+// 		fmt.Print(">")
+// 		fmt.Scan(&layanan_a)
+// 		if layanan_a == 1 {
+// 			selectionsort(*P, *dbc)
+// 		}else if layanan_a == 2 {
+// 			insertionsort(*P, *dbc)
+// 		}else if layanan_a == 3 {
+// 			binarySearch()
+// 		}
+// 	}else if layanan == 2 {
+// 		HapusAkunPasien()
+// 	}else if layanan == 3 {
+// 		EditAkunPasien()
+// 	}
+// }
