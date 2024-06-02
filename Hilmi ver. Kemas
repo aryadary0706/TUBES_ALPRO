@@ -145,7 +145,8 @@ func interface04(sesilogin int) {
 	fmt.Println("1. Tampilkan data pasien")
 	fmt.Println("2. Hapus Akun Pasien")
 	fmt.Println("3. Edit Akun Pasien")
-	fmt.Println("4. Keluar")
+	fmt.Println("4. Cari Akun Pasien")
+	fmt.Println("5. Keluar")
 	fmt.Println("=====================================================")
 	fmt.Print("> ")
 }
@@ -571,29 +572,72 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	// }
 
 
-// func administration(P atributpasien, dbc int, sesi int){
-// 	interface05(*sesi)
-// 	var layanan, layanan_a int
-// 	layanan = 1
-// 	fmt.Scan(&layanan)
-// 	for layanan != 1 && layanan != 2 && layanan != 3 && layanan != 4 {
-// 		fmt.Println("status: input kembali")
-// 		fmt.Scan(&layanan)
-// 	}
-// 	if layanan == 1 {
-// 		interface05()
-// 		fmt.Print(">")
-// 		fmt.Scan(&layanan_a)
-// 		if layanan_a == 1 {
-// 			selectionsort(*P, *dbc)
-// 		}else if layanan_a == 2 {
-// 			insertionsort(*P, *dbc)
-// 		}else if layanan_a == 3 {
-// 			binarySearch()
-// 		}
-// 	}else if layanan == 2 {
-// 		HapusAkunPasien()
-// 	}else if layanan == 3 {
-// 		EditAkunPasien()
-// 	}
-// }
+func administration(P atributpasien, dbc int, sesi int){
+	interface05(*sesi)
+	var layanan, layanan_a int
+	layanan = 1
+	fmt.Scan(&layanan)
+	for layanan != 1 && layanan != 2 && layanan != 3 && layanan != 4 {
+		fmt.Println("status: input kembali")
+		fmt.Scan(&layanan)
+	}
+	if layanan == 1 {
+		interface05()
+		fmt.Print(">")
+		fmt.Scan(&layanan_a)
+		if layanan_a == 1 {
+			selectionsort(*P, *dbc)
+		}else if layanan_a == 2 {
+			insertionsort(*P, *dbc)
+		}else if layanan_a == 3 {
+			binarySearch()
+		}
+	}else if layanan == 2 {
+		HapusAkunPasien()
+	}else if layanan == 3 {
+		EditAkunPasien()
+	}else if layanan == 4 {
+		cariAkunPasien()
+	}else{
+		logout()
+	}
+}
+
+func cariAkunPasien(P atributpasien, dbc int, sesi int) {
+	var IDtarget, idx int
+	var oldestRecord, BrandRecord, middle int
+	var found bool
+	var choice string
+	idx = 0
+	found = false
+	oldestRecord = 0
+	BrandRecord = dbc - 1
+	fmt.Println("------------------------------------------------")
+	fmt.Println("Masukkan ID pasien yang ingin kamu cari:")
+	fmt.Println("------------------------------------------------")
+	fmt.Print("> ")
+	fmt.Scan(&IDtarget)
+
+	for oldestRecord <= BrandRecord && found == false {
+		middle = (oldestRecord + BrandRecord) / 2
+		if P[middle] = IDtarget {
+			idx = middle
+			found = true
+		}else if P[middle] > IDtarget {
+			BrandRecord = middle - 1
+		}else{
+			oldestRecord = middle + 1
+		}
+	}
+	if found {
+		fmt.Println("ID ditemukan pada record pasien ke-", idx+1,". Apa data pasien mau ditampilkan")
+		fmt.Println("[Y/y untuk melanjutkan]") // sorry ini gua lagi males
+		fmt.Print("> ")
+		fmt.Scan(&choice)
+		if choice == "Y" {
+			//DisplayDataPasien()
+		}else{
+			return
+		}
+	}
+}
