@@ -3,6 +3,7 @@ package main
 //import eketensi yang diperlukan
 import (
 	"fmt"
+	"html/template"
 	"time"
 	// "os"
 )
@@ -77,8 +78,9 @@ func interface0(sesilogin int) {
 	fmt.Println("4. Keluar dan Logout")
 	if sesilogin = 0 {
 		fmt.Println("Anda membuka fitur [ADMIN]")
+		fmt.Println("Saat ini jumlah record Pasien rumah sakit adalah", dbc)
 		fmt.Println("5. Tampilkan Data Pasien")
-		fmt.Println("6. Perbarui List Akun Pasien")//mengolah akun pasien dengan namadepan -1 dan namabelakang -1
+		// fmt.Println("6. Perbarui List Akun Pasien")//mengolah akun pasien dengan namadepan -1 dan namabelakang -1
 		fmt.Println("7. Edit Akun Pasien")
 	}
 	fmt.Println()
@@ -232,11 +234,9 @@ func main() {
 				fmt.Println("Pilih limit penampilan data pasien:")
 				fmt.Scan(&seltNum)
 				if pilihan == 1 {
-					sortSelectionDesc(&P, seltNum, sesi)
-					DisplayAkun(P, dbc, seltNum, sesi)
+					sortSelectionDesc(&P, dbc, sesi)
 				}else if pilihan == 2 {
-					sortInsertionAsx(&P, seltNum, sesi)
-					DisplayAkun(P, dbc, seltNum, sesi)
+					sortInsertionAsx(&P, dbc, sesi)
 				}else if pilihan == 3 {
 					cariAkunPasien(P, dbc, sesi)
 				}
@@ -581,66 +581,58 @@ func cariAkunPasien(P atributpasien, dbc int, sesi int) {
 	}
 }
 
-// func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
-// 	var i, xubah int
-// 	var d int
-// 	var chunk_tanggaldari, chunk_bulandari, chunk_tahundari int
-// 	var chunk_tanggalke, chunk_bulanke, chunk_tahunke int
-// 	var s1, s2, s3 int
+func editdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
+	var i, xubah int
+	var d int
+	var chunk_tanggaldari, chunk_bulandari, chunk_tahundari int
+	var chunk_tanggalke, chunk_bulanke, chunk_tahunke int
+	var s1, s2, s3 int
 	
-// 	fmt.Println("Masukkan range tanggal kunjungan (Dari - Ke) :")
-// 	fmt.Print("Dari :")
-// 	fmt.Scan(&chunk_tanggaldari, &chunk_bulandari, &chunk_tahundari)
-// 	fmt.Print("Ke :")
-// 	fmt.Scan(&chunk_tanggalke, &chunk_bulanke, &chunk_tahunke)
-// 	for i <= *dbk && i < NMAX{
-// 		if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal >= chunk_tanggaldari && P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal <= chunk_tanggalke {
-// 			if P[*sesi].datakesehatan[i].tanggalpengecekan.bulan >= chunk_bulandari && P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal <= chunk_bulanke {
-// 				if P[*sesi].datakesehatan[i].tanggalpengecekan.tahun >= chunk_tahundari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun <= chunk_tahunke {
-// 					if s1 == 0 {
-// 						s1 = i 
-// 					} else if s1 > 0 {
-// 						s2 = i
-// 					} else if s2 > 0 {
-// 						s3 = i
-// 					}
-// 				}
-// 			}
-// 		}
-// 		i = i + 1
-// 	}
-// 	fmt.Println("Pilih data yang akan di edit : ")
-// 	fmt.Println("ID     TANGGAL       BULAN     TAHUN")
-// 	fmt.Println("Data 1", P[*sesi].datakesehatan[s1].idkunjungan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s1].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tahun) 
-// 	fmt.Println("Data 2", P[*sesi].datakesehatan[s2].idkunjungan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s2].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tahun) 
-// 	fmt.Println("Data 3", P[*sesi].datakesehatan[s3].idkunjungan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s3].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tahun) 
-// 	fmt.Println("Masukkan Nomor :")
-// 	fmt.Scan(&d)
-// 	if d == 1 {
-// 		xubah = s1 
-// 	} else if d == 2 {
-// 		xubah = s2
-// 	} else if d == 3 {
-// 		xubah = s3
-// 	}
-// 	fmt.Print("Data yang dirubah adalah data dengan ID kunjungan :", P[*sesi].datakesehatan[xubah].idkunjungan)
-// 	fmt.Print("Masukkan berat badan yang ingin diubah :")
-// 	fmt.Scan(&P[*sesi].datakesehatan[xubah].beratbadan)
-// 	fmt.Print("Masukkan tinggi badan yang ingin diubah :")
-// 	fmt.Scan(&P[*sesi].datakesehatan[xubah].tinggibadan)
-// 	fmt.Print("Masukkan berat badan yang ingin diubah :")
-// 	fmt.Scan(&P[*sesi].datakesehatan[xubah].tekanandarah)
-// 	fmt.Print("Masukkan tinggi badan yang ingin diubah :")
-// 	fmt.Scan(&P[*sesi].datakesehatan[xubah].tinggibadan)
-// }
-
-	// func hapusdata(P *atributPasien, dbc *int, sesi *int) {
-
-	// }
-
-	// func cekkesehatan {
-		
-	// }
+	fmt.Println("Masukkan range tanggal kunjungan (Dari - Ke) :")
+	fmt.Print("Dari :")
+	fmt.Scan(&chunk_tanggaldari, &chunk_bulandari, &chunk_tahundari)
+	fmt.Print("Ke :")
+	fmt.Scan(&chunk_tanggalke, &chunk_bulanke, &chunk_tahunke)
+	for i <= *dbk && i < NMAX{
+		if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal >= chunk_tanggaldari && P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal <= chunk_tanggalke {
+			if P[*sesi].datakesehatan[i].tanggalpengecekan.bulan >= chunk_bulandari && P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal <= chunk_bulanke {
+				if P[*sesi].datakesehatan[i].tanggalpengecekan.tahun >= chunk_tahundari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun <= chunk_tahunke {
+					if s1 == 0 {
+						s1 = i 
+					} else if s1 > 0 {
+						s2 = i
+					} else if s2 > 0 {
+						s3 = i
+					}
+				}
+			}
+		}
+		i = i + 1
+	}
+	fmt.Println("Pilih data yang akan di edit : ")
+	fmt.Println("ID     TANGGAL       BULAN     TAHUN")
+	fmt.Println("Data 1", P[*sesi].datakesehatan[s1].idkunjungan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s1].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s1].tanggalpengecekan.tahun) 
+	fmt.Println("Data 2", P[*sesi].datakesehatan[s2].idkunjungan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s2].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s2].tanggalpengecekan.tahun) 
+	fmt.Println("Data 3", P[*sesi].datakesehatan[s3].idkunjungan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[s3].tanggalpengecekan.bulan, P[*sesi].datakesehatan[s3].tanggalpengecekan.tahun) 
+	fmt.Println("Masukkan Nomor :")
+	fmt.Scan(&d)
+	if d == 1 {
+		xubah = s1 
+	} else if d == 2 {
+		xubah = s2
+	} else if d == 3 {
+		xubah = s3
+	}
+	fmt.Print("Data yang dirubah adalah data dengan ID kunjungan :", P[*sesi].datakesehatan[xubah].idkunjungan)
+	fmt.Print("Masukkan berat badan yang ingin diubah :")
+	fmt.Scan(&P[*sesi].datakesehatan[xubah].beratbadan)
+	fmt.Print("Masukkan tinggi badan yang ingin diubah :")
+	fmt.Scan(&P[*sesi].datakesehatan[xubah].tinggibadan)
+	fmt.Print("Masukkan berat badan yang ingin diubah :")
+	fmt.Scan(&P[*sesi].datakesehatan[xubah].tekanandarah)
+	fmt.Print("Masukkan tinggi badan yang ingin diubah :")
+	fmt.Scan(&P[*sesi].datakesehatan[xubah].tinggibadan)
+}
 
 DisplayAkun(P atributPasien, selectedNum int, dbc int, sesi int){
 	var n, i int
@@ -680,3 +672,96 @@ DisplayAkun(P atributPasien, selectedNum int, dbc int, sesi int){
 		}
 	}
 }
+
+
+EditAkunPasien(P *atributPasien, dbc *int){
+	var id int
+	var Pointedid int
+
+	var chc int
+	fmt.Println("Masukkan ID Pasien yang ingin diedit:")
+	fmt.Scan(&id)
+	Pointedid = Sequentialsearch()
+	if Pointedid != -1 {
+		fmt.Println("-----------------------------------------")
+		fmt.Println("ID :", P[n].idpasien)
+		fmt.Println("Nama: ", P[n].namapasien,namadepan, P[n].namapasien.namabelakang)
+		fmt.Println("usia: ", P[n].usia)
+		fmt.Println("TTL :", P[n].tempatlahir, ",", P[n].tanggallahir.tanggal, P[n].tanggallahir.bulan, P[n].tanggallahir.tahun)
+		fmt.Println("Gender :", P[n].gender)
+		fmt.Println("Pilih Atribut yang akan di-Edit:")
+		fmt.Println("-----------------------------------------")
+		fmt.Println()
+		fmt.Println("<1> Nama")
+		fmt.Println("<2> usia")
+		fmt.Println("<3> tempat Lahir")
+		fmt.Println("<4> tanggal Lahir")
+		fmt.Println("<5> gender")
+		fmt.Println()
+		fmt.Println("Pilih angka sesuai Atribut yang di-Edit:")
+		fmt.Scan(&chc)
+
+		if chc == 1 {
+			fmt.Println("Masukkan Nama Baru:")
+			fmt.Scan(&P[n].namapasien,namadepan, &P[n].namapasien.namabelakang)
+			fmt.Println("Data sudah di-update!")
+		}else chc == 2 {
+			fmt.Println("Masukkan Usia:")
+			fmt.Scan(&P[n].usia)
+			fmt.Println("Data sudah di-update!")
+		}else if chc == 3 {
+			fmt.Println("Masukkan Tempat Lahir:")
+			fmt.Scan(&P[n].tempatlahir)
+			fmt.Println("Data sudah di-update!")
+		}else if chc == 4 {
+			fmt.Println("Masukkan Tanggal Lahir:")
+			fmt.Scan(&P[n].tanggallahir.tanggal, &P[n].tanggallahir.bulan, &P[n].tanggallahir.tahun)
+			fmt.Println("Data sudah di-update!")
+		}else if chc == 5 {
+			fmt.Println("Masukkan Gender:")
+			fmt.Scan(&P[n].gender)
+			fmt.Println("Data sudah di-update!")
+		}
+
+
+	}
+}
+
+sortSelectionDesc(P *atributPasien, dbc int, sesi int){
+	var pass, i, idx int
+	var temp atributPasien
+	var SelectedNum int
+	for pass = 1; pass < dbc; pass++ {
+		idx = pass-1
+		for i =pass; i < dbc; i++ {
+			if P[idx] < A[i] {
+				idx = i
+			}
+		}
+		temp = A[pass-1]
+		A[pass-1] = A[idx]
+		A[idx] = temp
+	}
+	fmt.Println("Untuk men-Display Akun, Masukkan batasan angka:")
+	fmt.Scan(&SelectedNum)
+	DisplayAkun(*P, selectedNum, dbc, sesi)
+}
+
+sortInsertionAsx(P *atributPasien, dbc int, sesi int){
+	var pass, i int
+	var pass atributPasien
+	var selectedNum int
+	for pass= 1; pass < dbc; pass++ {
+		i = pass
+		temp = A[pass]
+		for i > 0 && temp < A[i-1] {
+			A[i] = A[i-1]
+			i = i-1
+		}
+		A[i] = temp
+	}
+	fmt.Println("Untuk men-Display Akun, Masukkan batasan angka:")
+	fmt.Scan(&SelectedNum)
+	DisplayAkun(*P, selectedNum, dbc, sesi)
+}
+
