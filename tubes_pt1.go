@@ -839,7 +839,7 @@ func sortSelectionDesc(P *atributpasien, dbc *int) {
 	var temp datapasien
 	ghostArray = *P
 
-	for pass = 1; pass <= *dbc; pass++ {
+	for pass = 1; pass < *dbc; pass++ {
 		idx = pass - 1
 		for i = pass; i <= *dbc; i++ {
 			if ghostArray[idx].idpasien < ghostArray[i].idpasien {
@@ -858,7 +858,7 @@ func sortInsertionAsx(P *atributpasien, dbc *int) {
 	var temp datapasien
 	var arrayGoib atributpasien
 	arrayGoib = *P
-	for pass = 2; pass <= *dbc; pass++ {
+	for pass = 1; pass < *dbc; pass++ {
 		i = pass
 		temp = arrayGoib[pass]
 		for i > 0 && temp.tanggallahir.tahun < arrayGoib[i-1].tanggallahir.tahun{
