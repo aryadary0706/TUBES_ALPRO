@@ -818,13 +818,18 @@ func EditDatabasePasien(P *atributpasien, dbc *int) {
 
 func sortSelectionDesc(P *atributpasien, dbc *int) {
 	var ghostArray atributpasien
-	var pass, i, idx int
+	var pass, i, idx, idxghost int
 	var temp datapasien
 	ghostArray = *P
 
-	for pass = 1; pass < *dbc; pass++ {
+	for j := 1; j < *dbc && P[j].status == 1; j++ {
+		ghostArray[idxghost] = P[j]
+		idxghost++
+	}
+
+	for pass = 1; pass < idxghost; pass++ {
 		idx = pass - 1
-		for i = pass; i < *dbc; i++ {
+		for i = pass; i < idxghost; i++ {
 			if ghostArray[idx].idpasien < ghostArray[i].idpasien {
 				idx = i
 			}
@@ -833,30 +838,35 @@ func sortSelectionDesc(P *atributpasien, dbc *int) {
 		ghostArray[pass-1] = ghostArray[idx]
 		ghostArray[idx] = temp
 	}
-	DisplayAkun(&ghostArray, dbc)
+	DisplayAkun(&ghostArray, &idxghost)
 }
 
 func sortInsertionAsx(P *atributpasien, dbc *int) {
-	var pass, i int
+	var pass, i, idxGoib int
 	var temp datapasien
 	var arrayGoib atributpasien
-	arrayGoib = *P
-	for pass = 1; pass < *dbc; pass++ {
+
+	for j := 1; j < *dbc && P[j].status == 1; j++ {
+		arrayGoib[idxGoib] = P[j]
+		idxGoib++
+	}
+	for pass = 1; pass < idxGoib; pass++ {
 		i = pass
 		temp = arrayGoib[pass]
-		for i >= 1 && temp.namapasien.namadepan < arrayGoib[i-1].namapasien.namadepan {
+		for i > 0 && temp.namapasien.namadepan < arrayGoib[i-1].namapasien.namadepan {
 			arrayGoib[i] = arrayGoib[i-1]
 			i = i - 1
 		}
 		P[i] = temp
 	}
-	DisplayAkun(&arrayGoib, dbc)
+	DisplayAkun(&arrayGoib, &idxGoib)
 }
 
 func Sequentialsearch(P atributpasien, dbc int, x int) int {
 	var stopper bool
 	var i int
 	var indeX int
+	i = 1
 	stopper = false
 	for i <= dbc && !stopper {
 		if P[i].idpasien == x {
@@ -876,8 +886,8 @@ func cariAkunPasien(P *atributpasien, dbc *int, sesi *int) {
 
 	idx = 0
 	found = false
-	oldestRecord = 0
-	BrandRecord = *dbc
+	oldestRecord = 1
+	BrandRecord = *dbc-1
 	fmt.Println("------------------------------------------------")
 	fmt.Println("Masukkan ID pasien yang ingin kamu cari:")
 	fmt.Println("------------------------------------------------")
