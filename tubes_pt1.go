@@ -149,7 +149,6 @@ func interface03(P *atributpasien, sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
-
 func interface05(sesilogin int) {
 	fmt.Println("=====================================================")
 	fmt.Println("               DATABASE PASIEN KESEHATAN         ")
@@ -231,7 +230,7 @@ func main() {
 				if pilihan == 1 {
 					fmt.Println()
 					fmt.Println("<1>. Tampilkan berdasarkan Data Terkini")
-					fmt.Println("<2>. Tampilkan berdasarkan Tahun Lahir Pasien")
+					fmt.Println("<2>. Tampilkan berdasarkan Nama Pasien")
 					fmt.Println()
 					fmt.Println("Masukkan Angka")
 					fmt.Scan(&uruti)
@@ -239,16 +238,16 @@ func main() {
 						fmt.Scan(&uruti)
 					}
 					if uruti == 1 {
-						sortSelectionDesc(&datapasien, &dbc)
+						sortSelectionDesc(datapasien, dbc)
 
 					} else if uruti == 2 {
-						sortInsertionAsx(&datapasien, &dbc)
+						sortInsertionAsx(datapasien, dbc)
 
 					}
 				} else if pilihan == 2 {
-					cariAkunPasien(&datapasien, &dbc, &sesi)
+					cariAkunPasien(datapasien, dbc)
 				} else if pilihan == 3 {
-					EditDatabasePasien(&datapasien, &dbc)
+					EditDatabasePasien(&datapasien, dbc)
 				} else if pilihan == 4 {
 					sesi = -1
 				}
@@ -354,13 +353,13 @@ func daftarpengguna(P *atributpasien, dbc *int, sesi *int) {
 func pencaristatuskosong(P atributpasien, dbc int) int {
 	var i int
 	i = 0
-		for i < dbc {
-			if P[i].status == 1{
-				return i
-			}
-			i = i + 1
+	for i < dbc {
+		if P[i].status == 2 {
+			return i
 		}
-		return -1
+		i = i + 1
+	}
+	return -1
 }
 
 func masukpengguna(P *atributpasien, dbc *int, sesi *int) {
@@ -528,7 +527,7 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	dbkunjungankosong = pencaridbkunjungankosong(*P, *dbc, *dbk, *sesi)
 	if dbkunjungankosong == -1 {
 		*dbk = *dbk + 1
-	
+
 		fmt.Println("Apakah data pengecekan ini dilakukan pada hari ini?")
 		fmt.Println("1 : Ya")
 		fmt.Println("2 : Tidak")
@@ -587,7 +586,7 @@ func tambahdata(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 func pencaridbkunjungankosong(P atributpasien, dbc, dbk, sesi int) int {
 	var dbkunjungankosong int
 	dbkunjungankosong = 0
-	for dbkunjungankosong < dbc {
+	for dbkunjungankosong <= dbc {
 		if P[sesi].datakesehatan[dbkunjungankosong].statusKunjungan == 2 {
 			return dbkunjungankosong
 		}
@@ -723,15 +722,15 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 	}
 }
 
-func DisplayAkun(P *atributpasien, dbc *int) {
+func DisplayAkun(P atributpasien, dbc int) {
 	var n, i, m int
 	n = 0
 	m = 0
 	fmt.Println("=============================================")
 	fmt.Println("      LIST PASIEN RUMAH SAKIT TELKOM         ")
 	fmt.Println("=============================================")
-	for n <= *dbc {
-		if P[n].status != 2 {
+	for n <= dbc-1 {
+		if P[m].status != 2 {
 			fmt.Println("-----------------------------------------")
 			fmt.Println("ID :", P[m].idpasien)
 			fmt.Println("Nama: ", P[m].namapasien.namadepan, P[n].namapasien.namabelakang)
@@ -764,13 +763,13 @@ func DisplayAkun(P *atributpasien, dbc *int) {
 	}
 }
 
-func EditDatabasePasien(P *atributpasien, dbc *int) {
+func EditDatabasePasien(P *atributpasien, dbc int) {
 	var id int
 	var Pointedid int
 	var chc int
 	fmt.Println("Masukkan ID Pasien yang ingin diedit:")
 	fmt.Scan(&id)
-	Pointedid = Sequentialsearch(*P, *dbc, id)
+	Pointedid = Sequentialsearch(P, dbc, id)
 	if P[Pointedid].idpasien != 0 {
 		fmt.Println("-----------------------------------------")
 		fmt.Println("ID :", P[Pointedid].idpasien)
@@ -816,16 +815,18 @@ func EditDatabasePasien(P *atributpasien, dbc *int) {
 	}
 }
 
-func sortSelectionDesc(P *atributpasien, dbc *int) {
+func sortSelectionDesc(P atributpasien, dbc int) {
 	var ghostArray atributpasien
 	var pass, i, idx, idxghost int
 	var temp datapasien
-	ghostArray = *P
+	ghostArray = P
 
-	for j := 1; j < *dbc && P[j].status == 1; j++ {
+	for j := 1; j <= dbc && P[j].status == 1; j++ {
 		ghostArray[idxghost] = P[j]
+		fmt.Println("Nama: ", ghostArray[idxghost].namapasien.namadepan, ghostArray[idxghost].namapasien.namabelakang)
 		idxghost++
 	}
+	fmt.Println("index array baru: ", idxghost)
 
 	for pass = 1; pass < idxghost; pass++ {
 		idx = pass - 1
@@ -838,18 +839,20 @@ func sortSelectionDesc(P *atributpasien, dbc *int) {
 		ghostArray[pass-1] = ghostArray[idx]
 		ghostArray[idx] = temp
 	}
-	DisplayAkun(&ghostArray, &idxghost)
+	DisplayAkun(ghostArray, idxghost)
 }
 
-func sortInsertionAsx(P *atributpasien, dbc *int) {
+func sortInsertionAsx(P atributpasien, dbc int) {
 	var pass, i, idxGoib int
 	var temp datapasien
 	var arrayGoib atributpasien
 
-	for j := 1; j < *dbc && P[j].status == 1; j++ {
+	for j := 1; j <= dbc && P[j].status == 1; j++ {
 		arrayGoib[idxGoib] = P[j]
+		fmt.Println("Nama: ", arrayGoib[idxGoib].namapasien.namadepan, arrayGoib[idxGoib].namapasien.namabelakang)
 		idxGoib++
 	}
+	fmt.Println("index array baru: ", idxGoib)
 	for pass = 1; pass < idxGoib; pass++ {
 		i = pass
 		temp = arrayGoib[pass]
@@ -859,7 +862,7 @@ func sortInsertionAsx(P *atributpasien, dbc *int) {
 		}
 		P[i] = temp
 	}
-	DisplayAkun(&arrayGoib, &idxGoib)
+	DisplayAkun(arrayGoib, idxGoib)
 }
 
 func Sequentialsearch(P atributpasien, dbc int, x int) int {
@@ -878,7 +881,7 @@ func Sequentialsearch(P atributpasien, dbc int, x int) int {
 	return indeX
 }
 
-func cariAkunPasien(P *atributpasien, dbc *int, sesi *int) {
+func cariAkunPasien(P atributpasien, dbc int) {
 	var IDtarget, idx int
 	var oldestRecord, BrandRecord, middle int
 	var found bool
@@ -886,8 +889,8 @@ func cariAkunPasien(P *atributpasien, dbc *int, sesi *int) {
 
 	idx = 0
 	found = false
-	oldestRecord = 1
-	BrandRecord = *dbc-1
+	oldestRecord = 0
+	BrandRecord = dbc - 1
 	fmt.Println("------------------------------------------------")
 	fmt.Println("Masukkan ID pasien yang ingin kamu cari:")
 	fmt.Println("------------------------------------------------")
@@ -907,11 +910,11 @@ func cariAkunPasien(P *atributpasien, dbc *int, sesi *int) {
 	}
 	if found {
 		fmt.Println("ID ditemukan pada record pasien ke-", idx, ". Apa data pasien mau ditampilkan")
-		fmt.Println("[Y/y untuk melanjutkan]") // sorry ini gua lagi males
+		fmt.Println("[Y/y untuk melanjutkan] dan [T/t untuk kembali ke Menu]") // sorry ini gua lagi males
 		fmt.Print("> ")
 		fmt.Scan(&choice)
 		if choice == "Y" || choice == "y" {
-			DisplayAkun(P, dbc)
+
 		} else {
 			return
 		}
