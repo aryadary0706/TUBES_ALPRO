@@ -2,9 +2,10 @@ package main
 
 //import eketensi yang diperlukan
 import (
+	"encoding/gob"
 	"fmt"
-	"time"
 	"os"
+	"time"
 )
 
 // Konstanta minimal dari data
@@ -63,7 +64,8 @@ type atributpasien [NMAX]datapasien
 type arraykunjungan [NMAX]kunjungan
 
 // Interface yang akan di tampilkan
-func interface0(P *atributpasien, sesilogin int) {
+func interface0(P *atributpasien, dbc, sesilogin int) {
+	baca_data(P, &dbc)
 	fmt.Println("================================================")
 	fmt.Println("                SELAMAT DATANG DI               ")
 	fmt.Println("            APLIKASI PENGECEK KESEHATAN         ")
@@ -88,7 +90,8 @@ func interface0(P *atributpasien, sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
-func interface01(P *atributpasien, sesilogin int) {
+func interface01(P *atributpasien, dbc, sesilogin int) {
+	baca_data(P, &dbc)
 	fmt.Println("================================================")
 	fmt.Println("            APLIKASI PENGECEK KESEHATAN         ")
 	fmt.Println("          RUMAH SAKIT TELKOM UNIVERTSITY        ")
@@ -112,7 +115,8 @@ func interface01(P *atributpasien, sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
-func interface02(P *atributpasien, sesilogin int) {
+func interface02(P *atributpasien, dbc, sesilogin int) {
+	baca_data(P, &dbc)
 	fmt.Println("================================================")
 	fmt.Println("            APLIKASI PENGECEK KESEHATAN         ")
 	fmt.Println("          RUMAH SAKIT TELKOM UNIVERTSITY        ")
@@ -134,7 +138,8 @@ func interface02(P *atributpasien, sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
-func interface03(P *atributpasien, sesilogin int) {
+func interface03(P *atributpasien, dbc, sesilogin int) {
+	baca_data(P, &dbc)
 	fmt.Println("================================================")
 	fmt.Println("            APLIKASI PENGECEK KESEHATAN         ")
 	fmt.Println("          RUMAH SAKIT TELKOM UNIVERTSITY        ")
@@ -153,7 +158,8 @@ func interface03(P *atributpasien, sesilogin int) {
 	fmt.Print("Masukkan angka: ")
 }
 
-func interface05(sesilogin int) {
+func interface05(P *atributpasien, dbc, sesilogin int) {
+	baca_data(P, &dbc)
 	fmt.Println("=====================================================")
 	fmt.Println("               DATABASE PASIEN KESEHATAN         ")
 	fmt.Println("            RUMAH SAKIT TELKOM UNIVERTSITY        ")
@@ -168,24 +174,29 @@ func interface05(sesilogin int) {
 // Program utama
 func main() {
 	var datapasien atributpasien
+	var dbc int
 	var pilihan int
 	var sesi int
 	var dbk int
 
-	datapasien[999].namapasien.namadepan = "admin"
-	datapasien[999].idpasien = 999
-	datapasien[999].password = "Admin!"
+	baca_data(&datapasien, &dbc)
+
+	// datapasien[999].namapasien.namadepan = "admin"
+	// datapasien[999].idpasien = 999
+	// datapasien[999].password = "Admin!"
+	
+	tulis_data(&datapasien, &dbc)
 
 	sesi = -1
 	pilihan = 1
 	for pilihan >= 1 && pilihan <= 7 {
-		interface0(&datapasien, sesi)
+		interface0(&datapasien, dbc, sesi)
 		// fmt.Println("dbc :", dbc)
 		fmt.Scan(&pilihan)
 
 		if pilihan == 1 {
 			for pilihan >= 1 && pilihan <= 6 {
-				interface01(&datapasien, sesi)
+				interface01(&datapasien, dbc, sesi)
 				fmt.Scan(&pilihan)
 				if pilihan == 1 {
 					daftarpengguna(&datapasien, &dbc, &sesi)
@@ -203,7 +214,7 @@ func main() {
 			}
 		} else if pilihan == 2 {
 			for pilihan >= 1 && pilihan <= 4 {
-				interface02(&datapasien, sesi)
+				interface02(&datapasien, dbc, sesi)
 				fmt.Scan(&pilihan)
 				if pilihan == 1 {
 					lihatdatakunjungan(&datapasien, &dbc, &dbk, &sesi)
@@ -216,7 +227,7 @@ func main() {
 				}
 			}
 		} else if pilihan == 3 {
-			interface03(&datapasien, sesi)
+			interface03(&datapasien, dbc, sesi)
 			for pilihan == 1 {
 				fmt.Scan(&pilihan)
 				if pilihan == 1 {
@@ -229,7 +240,7 @@ func main() {
 			var uruti int
 			pilihan = 1
 			for pilihan >= 1 && pilihan <= 4 {
-				interface05(sesi)
+				interface05(&datapasien, dbc, sesi)
 				fmt.Scan(&pilihan)
 				if pilihan == 1 {
 					fmt.Println()
@@ -262,16 +273,48 @@ func main() {
 
 // Komputasi menyimpan data ke file
 
-func baca_data(P *atributpasien, dbc *int) {
+func tulis_data(P *atributpasien, dbc *int) {
 	file, err := os.Create("user.dat")
 	if err != nil {
-		fmt.Println("Error creating file:", err)
+		fmt.Println("Error creating file: ", err)
 		return
 	}
 	defer file.Close()
+
+	encode := gob.NewEncoder(file)
+	err = encode.Encode(*P)
+	if err != nil {
+		fmt.Println("Error encoding array:", err)
+		return
+	}
+
+	err = encode.Encode(*dbc)
+	if err != nil {
+		fmt.Println("Error encoding n:", err)
+		return
+	}
 }
 
+func baca_data(P *atributpasien, dbc *int) {
+	file, err := os.Open("user.dat")
+	if err != nil {
+		fmt.Println("File tidak ditemukan")
+		return
+	}
+	defer file.Close()
 
+	decoder := gob.NewDecoder(file)
+	err = decoder.Decode(P)
+	if err != nil {
+		fmt.Println("Error decoding n:", err)
+	}
+
+	err = decoder.Decode(dbc)
+	if err != nil {
+		fmt.Println("error decoding n:")
+		return
+	}
+}
 
 // SubProgram per-layanan
 
@@ -404,7 +447,7 @@ func daftarpengguna(P *atributpasien, dbc *int, sesi *int) {
 				}
 				P[dbkosong].password = chunk_password
 			}
-			
+
 			P[dbkosong].status = 1
 			P[dbkosong].idpasien = dbkosong
 			*sesi = dbkosong
@@ -414,13 +457,14 @@ func daftarpengguna(P *atributpasien, dbc *int, sesi *int) {
 			fmt.Println("Identitas yang anda masukkan sudah terdaftar di sistem, silahkan hubungi petugas jika ada kendala")
 		}
 	}
+	tulis_data(P, dbc)
 }
 
 func pengecektanggal(check_tanggal, check_bulan, check_tahun int) bool {
 	var validasi bool
 
 	if check_tahun > 0 {
-		if (check_tahun % 4 == 0 && check_tahun % 100 != 0) || (check_tahun % 400 == 0) {
+		if (check_tahun%4 == 0 && check_tahun%100 != 0) || (check_tahun%400 == 0) {
 			if check_bulan == 1 || check_bulan == 3 || check_bulan == 5 || check_bulan == 7 || check_bulan == 8 || check_bulan == 10 || check_bulan == 12 {
 				if check_tanggal > 0 && check_tanggal <= 31 {
 					validasi = true
@@ -439,7 +483,7 @@ func pengecektanggal(check_tanggal, check_bulan, check_tahun int) bool {
 				} else {
 					validasi = false
 				}
-			} 
+			}
 		} else {
 			if check_bulan == 1 || check_bulan == 3 || check_bulan == 5 || check_bulan == 7 || check_bulan == 8 || check_bulan == 10 || check_bulan == 12 {
 				if check_tanggal > 0 && check_tanggal <= 31 {
@@ -686,7 +730,7 @@ func tambahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 		} else {
 			fmt.Println("Masukkan Tanggal Pengecekkan (DD/M/YYYY) :")
 			fmt.Scan(&chunk_tanggalkunjungan, &chunk_bulankunjungan, &chunk_tahunkunjungan)
-				for pengecektanggal(chunk_tanggalkunjungan, chunk_bulankunjungan, chunk_tahunkunjungan) == false && datefillcounter < 3 {
+			for pengecektanggal(chunk_tanggalkunjungan, chunk_bulankunjungan, chunk_tahunkunjungan) == false && datefillcounter < 3 {
 				fmt.Println("Tanggal yang anda masukkan salah atau format tidak sesuai, silahkan coba lagi")
 				fmt.Print("Masukkan tanggal kunjungan yang benar (DD/ M/ YYYY) : ")
 				fmt.Scan(chunk_tanggalkunjungan, &chunk_bulankunjungan, &chunk_tahunkunjungan)
@@ -694,7 +738,7 @@ func tambahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 			}
 			P[*sesi].datakesehatan[*dbk].tanggalpengecekan.tanggal = chunk_tanggalkunjungan
 			P[*sesi].datakesehatan[*dbk].tanggalpengecekan.bulan = chunk_bulankunjungan
-			P[*sesi].datakesehatan[*dbk].tanggalpengecekan.tahun =chunk_tahunkunjungan
+			P[*sesi].datakesehatan[*dbk].tanggalpengecekan.tahun = chunk_tahunkunjungan
 		}
 		fmt.Println("Masukkan Berat Badan :")
 		fmt.Scan(&P[*sesi].datakesehatan[*dbk].beratbadan)
@@ -722,7 +766,7 @@ func tambahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 			fmt.Println("Masukkan Tanggal Pengecekkan (DD/M/YYYY) :")
 			fmt.Println("Masukkan Tanggal Pengecekkan (DD/M/YYYY) :")
 			fmt.Scan(&chunk_tanggalkunjungan, &chunk_bulankunjungan, &chunk_tahunkunjungan)
-				for pengecektanggal(chunk_tanggalkunjungan, chunk_bulankunjungan, chunk_tahunkunjungan) == false && datefillcounter < 3 {
+			for pengecektanggal(chunk_tanggalkunjungan, chunk_bulankunjungan, chunk_tahunkunjungan) == false && datefillcounter < 3 {
 				fmt.Println("Tanggal yang anda masukkan salah atau format tidak sesuai, silahkan coba lagi")
 				fmt.Print("Masukkan tanggal kunjungan yang benar (DD/ M/ YYYY) : ")
 				fmt.Scan(chunk_tanggalkunjungan, &chunk_bulankunjungan, &chunk_tahunkunjungan)
