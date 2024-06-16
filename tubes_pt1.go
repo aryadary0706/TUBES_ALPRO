@@ -1235,45 +1235,6 @@ func DisplayAkun(P atributpasien, dbc int) {
 	}
 }
 
-func DisplayAkun_Personal(P datapasien) {
-	var i int
-	fmt.Println("-----------------------------------------")
-	fmt.Println("ID :", P.idpasien)
-	fmt.Println("Nama: ", P.namapasien.namadepan, P.namapasien.namabelakang)
-	fmt.Println("usia: ", P.usia)
-	fmt.Println("TTL :", P.tempatlahir, ",", P.tanggallahir.tanggal, P.tanggallahir.bulan, P.tanggallahir.tahun)
-	fmt.Println("Gender :", P.gender)
-	fmt.Println("-----------------------------------------")
-	i = 0
-	if P.datakesehatan[i].idkunjungan == 0 {
-		fmt.Println("-Pasien belum ada Record-")
-	}
-	for P.datakesehatan[i].statusKunjungan != 0 && P.datakesehatan[i].statusKunjungan != 2 {
-		fmt.Println("====================================================================")
-		fmt.Println("					LIST KUNJUNGAN PASIEN 							 ")
-		fmt.Println("====================================================================")
-		fmt.Println("id Kunjungan: ", P.datakesehatan[i].idkunjungan)
-		fmt.Println("Tanggal Kunjungan: ", P.datakesehatan[i].tanggalpengecekan.tanggal, "/", P.datakesehatan[i].tanggalpengecekan.bulan, "/", P.datakesehatan[i].tanggalpengecekan.tahun)
-		fmt.Println("===============[Hasil Diagnosa]===============")
-		fmt.Println("Berat Badan: ", P.datakesehatan[i].beratbadan)
-		fmt.Println("Tinggi Badan: ", P.datakesehatan[i].tinggibadan)
-		fmt.Println("Hasil BMI: ", P.datakesehatan[i].diagnosabmi.hasil)
-		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosabmi.kelompok)
-		fmt.Println("detail: ", P.datakesehatan[i].diagnosabmi.kategori)
-		fmt.Println()
-		fmt.Println("Tekanan Darah (Sitolik, Diastolik): ", P.datakesehatan[i].tekanandarahsistolik, P.datakesehatan[i].tekanandarahdistolik)
-		fmt.Println("Hasil Uji tekanan darah: ", P.datakesehatan[i].diagnosatekanandarah.hasil)
-		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosatekanandarah.kelompok)
-		fmt.Println("Detail: ", P.datakesehatan[i].diagnosatekanandarah.kategori)
-		fmt.Println("Kadar Gula Darah: ", P.datakesehatan[i].guladarah)
-		fmt.Println("Hasil Uji Gula darah: ", P.datakesehatan[i].diagnosaguladarah.hasil)
-		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosaguladarah.kelompok)
-		fmt.Println("Detail: ", P.datakesehatan[i].diagnosaguladarah.kategori)
-		fmt.Println("=============================================")
-		i++
-	}
-}
-
 func EditDatabasePasien(P *atributpasien, dbc int) {
 	var id int
 	var Pointedid int
@@ -1330,7 +1291,6 @@ func cariAkunPasien(P atributpasien, dbc int) {
 	var IDtarget, idx int
 	var oldestRecord, BrandRecord, middle int
 	var found bool
-	var choice string
 
 	idx = 0
 	found = false
@@ -1354,17 +1314,10 @@ func cariAkunPasien(P atributpasien, dbc int) {
 		}
 	}
 	if found {
-		fmt.Println("ID ditemukan pada record pasien ke-", idx, ". Apa data pasien mau ditampilkan")
-		fmt.Println("[Y/y untuk melanjutkan] dan [T/t untuk kembali ke Menu]") // sorry ini gua lagi males
-		fmt.Print("> ")
-		fmt.Scan(&choice)
-		if choice == "Y" || choice == "y" {
-			DisplayAkun_Personal(P[middle])
-		} else {
-			return
-		}
+		fmt.Println("ID ditemukan pada record pasien ke-", idx + 1, ". Apa data pasien mau ditampilkan")
 	}
 }
+
 
 // Subfungsi dan Tools
 
