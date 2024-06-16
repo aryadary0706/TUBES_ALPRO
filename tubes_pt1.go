@@ -164,6 +164,7 @@ func interface05(sesilogin int) {
 	fmt.Println("<1> Tampilkan Data terurut") // sort descending (selection sort)
 	fmt.Println("<2> Check ID Pasien")        //sort ascending (insertion sort)
 	fmt.Println("<3> Edit Database Pasien")
+	fmt.Println("<4> Keluar dari Menu")
 	fmt.Println("=====================================================")
 	fmt.Print("> ")
 }
