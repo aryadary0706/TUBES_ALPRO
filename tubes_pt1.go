@@ -87,7 +87,7 @@ func interface0(P *atributpasien, sesilogin int) {
 	}
 	fmt.Println()
 	fmt.Println()
-	fmt.Print("Masukkan angka: ")
+	fmt.Print("Masukkan angka : ")
 }
 
 func interface01(P *atributpasien, sesilogin int) {
@@ -111,7 +111,7 @@ func interface01(P *atributpasien, sesilogin int) {
 	fmt.Println("7. Kembali ke halaman utama")
 	fmt.Println()
 	fmt.Println()
-	fmt.Print("Masukkan angka: ")
+	fmt.Print("Masukkan angka : ")
 }
 
 func interface02(P *atributpasien, sesilogin int) {
@@ -126,14 +126,14 @@ func interface02(P *atributpasien, sesilogin int) {
 		fmt.Println("Dengan ID User :", P[*&sesilogin].idpasien)
 	}
 	fmt.Println("Pilih layanan data yang mana kamu inginkan?")
-	fmt.Println("1. Lihat Semua Data")
+	fmt.Println("1. Lihat Data")
 	fmt.Println("2. Rekam/Tambah Data")
 	fmt.Println("3. Ubah/Edit Data")
 	fmt.Println("4. Hapus Data")
 	fmt.Println("5. Kembali ke halaman utama")
 	fmt.Println()
 	fmt.Println()
-	fmt.Print("Masukkan angka: ")
+	fmt.Print("Masukkan angka : ")
 }
 
 func interface03(P *atributpasien, sesilogin int) {
@@ -153,7 +153,7 @@ func interface03(P *atributpasien, sesilogin int) {
 	fmt.Println("5. Kembali ke halaman utama")
 	fmt.Println()
 	fmt.Println()
-	fmt.Print("Masukkan angka: ")
+	fmt.Print("Masukkan angka : ")
 }
 
 func interface05(sesilogin int) {
@@ -581,24 +581,68 @@ func lihatdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang
 	//proses : pengguna memasukkan tanggal, bulan, tahun dari arraykunjungan yang ingin dimasukkan. lalu program memproses fungsi pencaritanggal untuk mencari index akun yang tanggal kunjungan  sesuai pada arraykunjungan pada P tersebut
 	//F.S : jika index data ditemukan, maka akan men-output data kunjungan. Jika tidak, maka akan keluar dari prosedur
-	var chunk_tanggal, chunk_bulan, chunk_tahun int
-	var chunk_ketemu int
+	var chunk_tanggalcari, chunk_bulancari, chunk_tahuncari int
+	var chunk_pemilihanmetodecari int
+	var chunk_id int
+	var arrpencaritanggal [100]int
+	var i, n, x int
 
 	fmt.Println("Pastikan Anda login dengan ID yang sesuai")
-	fmt.Println("Masukkan tanggal pengecekan kesehatan (DD/M/YYYY) : ")
-	fmt.Scan(&chunk_tanggal, &chunk_bulan, &chunk_tahun)
-	chunk_ketemu = pencaritanggal(*P, *dbc, *dbk, *sesi, chunk_tanggal, chunk_bulan, chunk_tahun)
-	if chunk_ketemu != -1 {
-		fmt.Println("ID Kunjungan : ", P[*sesi].datakesehatan[chunk_ketemu].idkunjungan)
-		fmt.Println(P[*sesi].datakesehatan[chunk_ketemu].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[chunk_ketemu].tanggalpengecekan.bulan, P[*sesi].datakesehatan[chunk_ketemu].tanggalpengecekan.tahun)
-		fmt.Println("Berat Badan               : ", P[*sesi].datakesehatan[chunk_ketemu].beratbadan, "kg")
-		fmt.Println("Tinggi Badan              : ", P[*sesi].datakesehatan[chunk_ketemu].tinggibadan, "cm")
-		fmt.Println("BMI                       : ", P[*sesi].datakesehatan[chunk_ketemu].diagnosabmi)
-		fmt.Println("Tekanan Darah Distoltik   : ", P[*sesi].datakesehatan[chunk_ketemu].tekanandarahdistolik, "mmHg")
-		fmt.Println("Tekanan Darah Sistolik    : ", P[*sesi].datakesehatan[chunk_ketemu].tekanandarahsistolik, "mmHg")
-		fmt.Println("Gula Darah				   : ", P[*sesi].datakesehatan[chunk_ketemu].guladarah, "mg/dL")
+	fmt.Println("Berdasarkan apa properti data yang ingin di pakai (ID Kunjungan/ Tanggal Kunjungan) ?")
+	fmt.Println("1 : ID Kunjungan")
+	fmt.Println("2 : Tanggal Kunjungan")
+	fmt.Scan(&chunk_pemilihanmetodecari)
+	if chunk_pemilihanmetodecari == 1 {
+		fmt.Print("Masukkan ID Kunjungan yang ingin digunakan :")
+		fmt.Scan(&chunk_id)
+		if P[*sesi].datakesehatan[chunk_id].idkunjungan != 0 && P[*sesi].datakesehatan[chunk_id].statusKunjungan != 2 {
+			fmt.Println("Data ditemukan dengan keterangan berikut : ")
+			fmt.Println("ID Kunjungan 				: ", P[*sesi].datakesehatan[chunk_id].idkunjungan)
+			fmt.Println("Tanggal Kunjungan 			: ", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tanggal, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.bulan, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tahun)
+			fmt.Println("Berat Badan				: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "kg")
+			fmt.Println("Tinggi Badan				: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "m")
+			fmt.Println("Tekanan Darah Distolik 	: ", P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik, "mmHg")
+			fmt.Println("Tekanan Darah Sistolik 	: ", P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik, "mmHg")
+			fmt.Println("Gula Darah					: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
+		} else {
+			fmt.Println("Berdasarkan waktu yang anda masukkan, data tidak ditemukan")
+		}
+	} else if chunk_pemilihanmetodecari == 2 {
+		fmt.Println("Masukkan tanggal kunjungan :")
+		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
+		for i < *dbk {
+			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
+				arrpencaritanggal[n] = i
+				n = n + 1
+			}
+			i = i + 1
+		}
+		if n != 0 {
+			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
+			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
+			for x <= n {
+				fmt.Printf("%d/%d/%d %7d %7f kg %7d m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
+				x = x + 1
+			}
+			fmt.Println("Masukkan data sesuai ID Kunjungan :")
+			fmt.Scan(&chunk_id)
+			if P[*sesi].datakesehatan[chunk_id].idkunjungan != 0 && P[*sesi].datakesehatan[chunk_id].idkunjungan != -1 {
+				fmt.Println("Data ditemukan dengan keterangan berikut : ")
+				fmt.Println("ID Kunjungan 				: ", P[*sesi].datakesehatan[chunk_id].idkunjungan)
+				fmt.Println("Tanggal Kunjungan 			: ", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tanggal, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.bulan, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tahun)
+				fmt.Println("Berat Badan				: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "kg")
+				fmt.Println("Tinggi Badan				: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "m")
+				fmt.Println("Tekanan Darah Distolik 	: ", P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik, "mmHg")
+				fmt.Println("Tekanan Darah Sistolik 	: ", P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik, "mmHg")
+				fmt.Println("Gula Darah					: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
+			} else {
+				fmt.Println("Berdasarkan waktu yang anda masukkan, data tidak ditemukan")
+			}
+		} else {
+			fmt.Println("Berdasarkan waktu yang anda masukkan, data tidak ditemukan")
+		}
 	} else {
-		fmt.Println("Berdasarkan waktu yang anda masukkan, data tidak ditemukan")
+		fmt.Println("Anda membatalkan pengecekkan")
 	}
 }
 
@@ -663,7 +707,6 @@ func tambahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 			P[*sesi].datakesehatan[dbkunjungankosong].tanggalpengecekan.bulan = int(currentTime.Month())
 			P[*sesi].datakesehatan[dbkunjungankosong].tanggalpengecekan.tahun = currentTime.Year()
 		} else {
-			fmt.Println("Masukkan Tanggal Pengecekkan (DD/M/YYYY) :")
 			fmt.Println("Masukkan Tanggal Pengecekkan (DD/M/YYYY) :")
 			fmt.Scan(&chunk_tanggalkunjungan, &chunk_bulankunjungan, &chunk_tahunkunjungan)
 			for pengecektanggal(chunk_tanggalkunjungan, chunk_bulankunjungan, chunk_tahunkunjungan) == false && datefillcounter < 3 {
@@ -882,73 +925,163 @@ func hapusdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 		wantDeletedID = Sequentialsearch(*P, *dbk, chunk_idcari)
 
 		P[*sesi].datakesehatan[wantDeletedID].statusKunjungan = 2
+		fmt.Println("Data sudah terhapus, untuk menambah atau mengubah gunakan fitur yang disediakan")
 	} else if chunk_pemilihanmetodecari == 2 {
 		fmt.Println("Masukkan data berdasarkan waktu kunjungan yang ingin dihapus (DD/M/YYYY)")
 		fmt.Scan(&chunk_tanggal, &chunk_bulan, &chunk_tahun)
 		wantDeletedID = pencaritanggal(*P, *dbc, *dbk, *sesi, chunk_tanggal, chunk_bulan, chunk_tahun)
 
 		P[*sesi].datakesehatan[wantDeletedID].statusKunjungan = 2
+		fmt.Println("Data sudah terhapus, untuk menambah atau mengubah gunakan fitur yang disediakan")
 	}
 }
 
 func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
+	var chunk_tanggalcari, chunk_bulancari, chunk_tahuncari int
 	var chunk_konfirmasipenggunaan int
+	var chunk_pemilihanmetodecari int
+	var arrpencaritanggal [100]int
 	var chunk_id int
-	var i int
+	var n, i, x int
 
-	fmt.Print("Masukkan ID Kunjungan yang ingin digunakan :")
-	fmt.Scan(&chunk_id)
-	if P[*sesi].datakesehatan[chunk_id].idkunjungan != 0 && P[*sesi].datakesehatan[chunk_id].statusKunjungan != 2 {
-		fmt.Println("Data ditemukan dengan keterangan berikut : ")
-		fmt.Println("ID Kunjungan 			: ", P[*sesi].datakesehatan[chunk_id].idkunjungan)
-		fmt.Println("Tanggal Kunjungan 		: ", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tanggal, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.bulan, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tahun)
-		fmt.Println("Berat Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "kg")
-		fmt.Println("Tinggi Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "m")
-		fmt.Println("Tekanan Darah Distolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik, "mmHg")
-		fmt.Println("Tekanan Darah Sistolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik, "mmHg")
-		fmt.Println("Gula Darah				: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
-		fmt.Println("Apakah data yang ingin di gunakan benar (1 jika benar/ 0 jika salah) ?")
-		fmt.Scan(&chunk_konfirmasipenggunaan)
-		if chunk_konfirmasipenggunaan == 1 {
-		
-			if P[*sesi].datakesehatan[i].diagnosabmi.hasil < 17 {
-				P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
-				P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat rendah"
-			} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 17 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 18.5 {
-				P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
-				P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat sedang"
-			} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 18.5 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 25 {
-				P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Normal"
-				P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Berat badan normal"
-			} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 25 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 30 {
-				P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
-				P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat rendah"
-			} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 30 {
-				P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
-				P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat tinggi"
-			}
+	fmt.Println("Berdasarkan apa properti data yang ingin di pakai (ID Kunjungan/ Tanggal Kunjungan) ?")
+	fmt.Println("1 : ID Kunjungan")
+	fmt.Println("2 : Tanggal Kunjungan")
+	fmt.Scan(&chunk_pemilihanmetodecari)
+	if chunk_pemilihanmetodecari == 1 {
+		fmt.Print("Masukkan ID Kunjungan yang ingin digunakan :")
+		fmt.Scan(&chunk_id)
+		if P[*sesi].datakesehatan[chunk_id].idkunjungan != 0 && P[*sesi].datakesehatan[chunk_id].statusKunjungan != 2 {
+			fmt.Println("Data ditemukan dengan keterangan berikut : ")
+			fmt.Println("ID Kunjungan 			: ", P[*sesi].datakesehatan[chunk_id].idkunjungan)
+			fmt.Println("Tanggal Kunjungan 		: ", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tanggal, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.bulan, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tahun)
+			fmt.Println("Berat Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "kg")
+			fmt.Println("Tinggi Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "m")
+			fmt.Println("Tekanan Darah Distolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik, "mmHg")
+			fmt.Println("Tekanan Darah Sistolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik, "mmHg")
+			fmt.Println("Gula Darah				: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
+			fmt.Println("Apakah data yang ingin di gunakan benar (1 jika benar/ 0 jika salah) ?")
+			fmt.Scan(&chunk_konfirmasipenggunaan)
+			if chunk_konfirmasipenggunaan == 1 {
+				P[*sesi].datakesehatan[*dbk].diagnosabmi.hasil = P[*sesi].datakesehatan[*dbk].beratbadan / ((P[*sesi].datakesehatan[*dbk].tinggibadan / 100) * (P[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+				if P[*sesi].datakesehatan[i].diagnosabmi.hasil < 17 {
+					P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
+					P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat rendah"
+				} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 17 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 18.5 {
+					P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
+					P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat sedang"
+				} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 18.5 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 25 {
+					P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Normal"
+					P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Berat badan normal"
+				} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 25 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 30 {
+					P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
+					P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat rendah"
+				} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 30 {
+					P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
+					P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat tinggi"
+				}  
 
-			// Diagnosa Tekanan Darah
-			if P[*sesi].datakesehatan[i].tekanandarahsistolik < 90 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 60 {
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Rendah"
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah rendah (Hipotensi)"
-			} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 90 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 120 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 60 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 80 {
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Normal"
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah normal"
-			} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 120 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 80 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 90 {
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Pra-Hipertensi"
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Pra-Hipertensi)"
-			} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 90 {
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Tinggi"
-				P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Hipertensi)"
+				// Diagnosa Tekanan Darah
+				if P[*sesi].datakesehatan[i].tekanandarahsistolik < 90 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 60 {
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Rendah"
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah rendah (Hipotensi)"
+				} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 90 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 120 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 60 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 80 {
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Normal"
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah normal"
+				} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 120 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 80 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 90 {
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Pra-Hipertensi"
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Pra-Hipertensi)"
+				} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 90 {
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Tinggi"
+					P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Hipertensi)"
+				}
+				fmt.Println("Hasil cek kesehatan anda dengan keterangan : ")
+				fmt.Println("Kelompok : ", P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok)
+				fmt.Println("Kategori : ", P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori)
+			} else {
+				fmt.Println("Anda membatalkan pengecekan kesehatan")
 			}
 		} else {
-			fmt.Println("Anda membatalkan pengecekan gula darah")
+			fmt.Println("Anda memasukkan ID Kunjungan yang salah")
 		}
-	}else{
-		fmt.Println("Anda memasukkan ID Kunjungan yang salah")
+	} else if chunk_pemilihanmetodecari == 2 {
+		fmt.Println("Masukkan tanggal kunjungan :")
+		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
+		for i < *dbk {
+			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
+				arrpencaritanggal[n] = i
+				n = n + 1
+			}
+			i = i + 1
+		}
+		if n != 0 {
+			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
+			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
+			for x <= n {
+				fmt.Printf("%d/%d/%d %7d %7f kg %7d m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
+				x = x + 1
+			}
+			fmt.Println("Masukkan data sesuai ID Kunjungan :")
+			fmt.Scan(&chunk_id)
+			if P[*sesi].datakesehatan[chunk_id].idkunjungan != 0 && P[*sesi].datakesehatan[chunk_id].idkunjungan != -1 {
+				fmt.Println("Data ditemukan dengan keterangan berikut : ")
+				fmt.Println("ID Kunjungan 			: ", P[*sesi].datakesehatan[chunk_id].idkunjungan)
+				fmt.Println("Tanggal Kunjungan 		: ", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tanggal, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.bulan, "/", P[*sesi].datakesehatan[chunk_id].tanggalpengecekan.tahun)
+				fmt.Println("Berat Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "kg")
+				fmt.Println("Tinggi Badan			: ", P[*sesi].datakesehatan[chunk_id].beratbadan, "m")
+				fmt.Println("Tekanan Darah Distolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik, "mmHg")
+				fmt.Println("Tekanan Darah Sistolik : ", P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik, "mmHg")
+				fmt.Println("Gula Darah				: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
+				fmt.Println("Apakah data yang ingin di gunakan benar?")
+				fmt.Scan(&chunk_konfirmasipenggunaan)
+				if chunk_konfirmasipenggunaan == 1 {
+					P[*sesi].datakesehatan[*dbk].diagnosabmi.hasil = P[*sesi].datakesehatan[*dbk].beratbadan / ((P[*sesi].datakesehatan[*dbk].tinggibadan / 100) * (P[*sesi].datakesehatan[*dbk].tinggibadan / 100))
+					if P[*sesi].datakesehatan[i].diagnosabmi.hasil < 17 {
+						P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
+						P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat rendah"
+					} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 17 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 18.5 {
+						P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Kurus"
+						P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kekurangan berat badan tingkat sedang"
+					} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 18.5 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 25 {
+						P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Normal"
+						P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Berat badan normal"
+					} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 25 && P[*sesi].datakesehatan[i].diagnosabmi.hasil < 30 {
+						P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
+						P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat rendah"
+					} else if P[*sesi].datakesehatan[i].diagnosabmi.hasil >= 30 {
+						P[*sesi].datakesehatan[i].diagnosabmi.kelompok = "Gemuk"
+						P[*sesi].datakesehatan[i].diagnosabmi.kategori = "Kelebihan berat badan tingkat tinggi"
+					}
+	
+					// Diagnosa Tekanan Darah
+					if P[*sesi].datakesehatan[i].tekanandarahsistolik < 90 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 60 {
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Rendah"
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah rendah (Hipotensi)"
+					} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 90 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 120 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 60 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 80 {
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Normal"
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah normal"
+					} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 120 && P[*sesi].datakesehatan[i].tekanandarahsistolik < 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 80 && P[*sesi].datakesehatan[i].tekanandarahdistolik < 90 {
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Pra-Hipertensi"
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Pra-Hipertensi)"
+					} else if P[*sesi].datakesehatan[i].tekanandarahsistolik >= 140 && P[*sesi].datakesehatan[i].tekanandarahdistolik >= 90 {
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok = "Tinggi"
+						P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Hipertensi)"
+					}
+					fmt.Println("Hasil cek kesehatan anda dengan keterangan : ")
+					fmt.Println("Kelompok : ", P[*sesi].datakesehatan[i].diagnosatekanandarah.kelompok)
+					fmt.Println("Kategori : ", P[*sesi].datakesehatan[i].diagnosatekanandarah.kategori)
+				} else {
+					fmt.Println("Anda membatalkan pengecekan kesehatan")
+				}
+			} else {
+				fmt.Println("Anda memasukkan ID Kunjungan yang salah")
+			}
+		} else {
+			fmt.Println("Data tidak di temukan pada tanggal kunjungan yang anda")
+		}
+	} else {
+		fmt.Println("Anda membatalkan pengecekan kesehatan")
 	}
-
 }
 
 func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
@@ -991,6 +1124,9 @@ func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 				} else {
 					P[*sesi].datakesehatan[chunk_id].diagnosaguladarah.kelompok = "Diabetes Tinggi"
 				}
+				fmt.Println("Hasil cek gula darah anda dengan keterangan : ")
+				fmt.Println("Gula Darah : ", P[*sesi].datakesehatan[i].guladarah)
+				fmt.Println("Kelompok   : ", P[*sesi].datakesehatan[i].diagnosaguladarah.kelompok)
 			} else {
 				fmt.Println("Anda membatalkan pengecekan gula darah")
 			}
@@ -1041,6 +1177,9 @@ func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 					} else {
 						P[*sesi].datakesehatan[chunk_id].diagnosaguladarah.kelompok = "Diabetes Tinggi"
 					}
+					fmt.Println("Hasil cek gula darah anda dengan keterangan : ")
+					fmt.Println("Gula Darah : ", P[*sesi].datakesehatan[i].guladarah)
+					fmt.Println("Kelompok   : ", P[*sesi].datakesehatan[i].diagnosaguladarah.kelompok)
 				}
 			}
 		} else {
@@ -1077,10 +1216,14 @@ func DisplayAkun(P atributpasien, dbc int) {
 			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosabmi.kelompok)
 			fmt.Println("detail: ", P[m].datakesehatan[i].diagnosabmi.kategori)
 			fmt.Println()
-			fmt.Println("Tekanan Darah (Sitolik,Diastolik): ", P[m].datakesehatan[i].tekanandarahsistolik, P[m].datakesehatan[i].tekanandarahdistolik)
+			fmt.Println("Tekanan Darah (Sitolik, Diastolik): ", P[m].datakesehatan[i].tekanandarahsistolik, P[m].datakesehatan[i].tekanandarahdistolik)
 			fmt.Println("Hasil Uji tekanan darah: ", P[m].datakesehatan[i].diagnosatekanandarah.hasil)
 			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosatekanandarah.kelompok)
-			fmt.Println("detail: ", P[m].datakesehatan[i].diagnosatekanandarah.kategori)
+			fmt.Println("Detail: ", P[m].datakesehatan[i].diagnosatekanandarah.kategori)
+			fmt.Println("Kadar Gula Darah: ", P[m].datakesehatan[i].guladarah)
+			fmt.Println("Hasil Uji Gula darah: ", P[m].datakesehatan[i].diagnosaguladarah.hasil)
+			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosaguladarah.kelompok)
+			fmt.Println("Detail: ", P[m].datakesehatan[i].diagnosaguladarah.kategori)
 			fmt.Println("=============================================")
 			i++
 		}
@@ -1115,10 +1258,14 @@ func DisplayAkun_Personal(P datapasien) {
 		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosabmi.kelompok)
 		fmt.Println("detail: ", P.datakesehatan[i].diagnosabmi.kategori)
 		fmt.Println()
-		fmt.Println("Tekanan Darah (Sitolik,Diastolik): ", P.datakesehatan[i].tekanandarahsistolik, P.datakesehatan[i].tekanandarahdistolik)
+		fmt.Println("Tekanan Darah (Sitolik, Diastolik): ", P.datakesehatan[i].tekanandarahsistolik, P.datakesehatan[i].tekanandarahdistolik)
 		fmt.Println("Hasil Uji tekanan darah: ", P.datakesehatan[i].diagnosatekanandarah.hasil)
 		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosatekanandarah.kelompok)
-		fmt.Println("detail: ", P.datakesehatan[i].diagnosatekanandarah.kategori)
+		fmt.Println("Detail: ", P.datakesehatan[i].diagnosatekanandarah.kategori)
+		fmt.Println("Kadar Gula Darah: ", P.datakesehatan[i].guladarah)
+		fmt.Println("Hasil Uji Gula darah: ", P.datakesehatan[i].diagnosaguladarah.hasil)
+		fmt.Println("Termasuk dalam kelompok: ", P.datakesehatan[i].diagnosaguladarah.kelompok)
+		fmt.Println("Detail: ", P.datakesehatan[i].diagnosaguladarah.kategori)
 		fmt.Println("=============================================")
 		i++
 	}
