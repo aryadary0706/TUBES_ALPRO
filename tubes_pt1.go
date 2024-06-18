@@ -1454,7 +1454,7 @@ func sortInsertionAsx(P atributpasien, dbc int) {
 	for pass = 1; pass < idxGoib; pass++ {
 		i = pass
 		temp = arrayGoib[pass]
-		for i > 0 && temp.usia <= arrayGoib[i-1].usia {
+		for i > 0 && temp.usia < arrayGoib[i-1].usia {
 			arrayGoib[i] = arrayGoib[i-1]
 			i = i - 1
 		}
