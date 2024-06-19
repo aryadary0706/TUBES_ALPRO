@@ -1198,48 +1198,46 @@ func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 
 	}
 }
-
 func DisplayAkun(P atributpasien, dbc int) {
-	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang. Program hanya bisa dijalankan oleh pengguna berstatus admin
-	// F.S : program akan mendisplay seluruh datapasien dan arraykunjungan pengguna
-
 	var n, i, m int
 	n = 0
 	m = 0
+	i = 1
 	fmt.Println("=============================================")
-	fmt.Println("      LIST PASIEN RUMAH SAKIT TELKOM         ")
+	fmt.Println(i,"      LIST PASIEN RUMAH SAKIT TELKOM         ")
 	fmt.Println("=============================================")
-	for n <= dbc-1 {
-		if P[m].status != 2 {
-			fmt.Println("-----------------------------------------")
-			fmt.Println("ID :", P[m].idpasien)
-			fmt.Println("Nama: ", P[m].namapasien.namadepan, P[n].namapasien.namabelakang)
-			fmt.Println("usia: ", P[m].usia)
-			fmt.Println("TTL :", P[m].tempatlahir, ",", P[m].tanggallahir.tanggal, P[m].tanggallahir.bulan, P[m].tanggallahir.tahun)
-			fmt.Println("Gender :", P[m].gender)
-			i = 0
-			for P[n].datakesehatan[i].idkunjungan != 0 {
-				fmt.Println("id Kunjungan: ", P[m].datakesehatan[i].idkunjungan)
-				fmt.Println("Tanggal Kunjungan: ", P[m].datakesehatan[i].tanggalpengecekan.tanggal, "/", P[m].datakesehatan[i].tanggalpengecekan.bulan, "/", P[m].datakesehatan[i].tanggalpengecekan.tahun)
-				fmt.Println("===============[Hasil Diagnosa]===============")
-				fmt.Println("Berat Badan: ", P[m].datakesehatan[i].beratbadan)
-				fmt.Println("Tinggi Badan: ", P[m].datakesehatan[i].tinggibadan)
-				fmt.Println("Hasil BMI: ", P[m].datakesehatan[i].diagnosabmi.hasil)
-				fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosabmi.kelompok)
-				fmt.Println("detail: ", P[m].datakesehatan[i].diagnosabmi.kategori)
-				fmt.Println()
-				fmt.Println("Tekanan Darah (Sitolik,Diastolik): ", P[m].datakesehatan[i].tekanandarahsistolik, P[m].datakesehatan[i].tekanandarahdistolik)
-				fmt.Println("Hasil Uji tekanan darah: ", P[m].datakesehatan[i].diagnosatekanandarah.hasil)
-				fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosatekanandarah.kelompok)
-				fmt.Println("detail: ", P[m].datakesehatan[i].diagnosatekanandarah.kategori)
-				fmt.Println("=============================================")
-				i++
-			}
-			n++
-			m++
-		} else {
-			m++
+	for n < dbc {
+		fmt.Println("-----------------------------------------")
+		fmt.Println("ID :", P[m].idpasien)
+		fmt.Println("Nama: ", P[m].namapasien.namadepan, P[n].namapasien.namabelakang)
+		fmt.Println("usia: ", P[m].usia)
+		fmt.Println("TTL :", P[m].tempatlahir, ",", P[m].tanggallahir.tanggal, P[m].tanggallahir.bulan, P[m].tanggallahir.tahun)
+		fmt.Println("Gender :", P[m].gender)
+		fmt.Println("Gender :", P[m].usia)
+		for P[m].datakesehatan[i].statusKunjungan != 2 && P[m].datakesehatan[i].statusKunjungan != 0{
+			fmt.Println("id Kunjungan: ", P[m].datakesehatan[i].idkunjungan)
+			fmt.Println("Tanggal Kunjungan: ", P[m].datakesehatan[i].tanggalpengecekan.tanggal, "/", P[m].datakesehatan[i].tanggalpengecekan.bulan, "/", P[m].datakesehatan[i].tanggalpengecekan.tahun)
+			fmt.Println("===============[Hasil Diagnosa]===============")
+			fmt.Println("Berat Badan: ", P[m].datakesehatan[i].beratbadan)
+			fmt.Println("Tinggi Badan: ", P[m].datakesehatan[i].tinggibadan)
+			fmt.Println("Hasil BMI: ", P[m].datakesehatan[i].diagnosabmi.hasil)
+			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosabmi.kelompok)
+			fmt.Println("detail: ", P[m].datakesehatan[i].diagnosabmi.kategori)
+			fmt.Println()
+			fmt.Println("Tekanan Darah (Sitolik, Diastolik): ", P[m].datakesehatan[i].tekanandarahsistolik, P[m].datakesehatan[i].tekanandarahdistolik)
+			fmt.Println("Hasil Uji tekanan darah: ", P[m].datakesehatan[i].diagnosatekanandarah.hasil)
+			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosatekanandarah.kelompok)
+			fmt.Println("Detail: ", P[m].datakesehatan[i].diagnosatekanandarah.kategori)
+			fmt.Println()
+			fmt.Println("Kadar Gula Darah: ", P[m].datakesehatan[i].guladarah)
+			fmt.Println("Hasil Uji Gula darah: ", P[m].datakesehatan[i].diagnosaguladarah.hasil)
+			fmt.Println("Termasuk dalam kelompok: ", P[m].datakesehatan[i].diagnosaguladarah.kelompok)
+			fmt.Println("Detail: ", P[m].datakesehatan[1].diagnosaguladarah.kategori)
+			fmt.Println("=============================================")
+			i++
 		}
+		n++
+		m++
 	}
 }
 
