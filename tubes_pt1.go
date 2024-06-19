@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"time"
-	// "os"
 )
 
 // Konstanta minimal dari data
@@ -497,7 +496,7 @@ func ubahdatapasien(P *atributpasien, dbc *int, sesi *int) {
 		fmt.Println("Tempat Lahir         	:", P[*sesi].tempatlahir)
 		fmt.Println("Tanggal/ Tahun Lahir	:", P[*sesi].tanggallahir.tanggal, P[*sesi].tanggallahir.bulan, P[*sesi].tanggallahir.tahun)
 		fmt.Println("Gender					:", P[*sesi].gender)
-		fmt.Println("Usia					:", P[*sesi].usia)			
+		fmt.Println("Usia					:", P[*sesi].usia)
 	} else {
 		if *sesi == -1 {
 			fmt.Println("Pastikan Anda masuk dengan ID atau akun yang benar, jika ada kendala hubungi petugas")
@@ -611,19 +610,29 @@ func lihatdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	} else if chunk_pemilihanmetodecari == 2 {
 		fmt.Println("Masukkan tanggal kunjungan :")
 		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
-		for i < *dbk {
+		for i <= *dbk {
 			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
 				arrpencaritanggal[n] = i
-				n = n + 1
+				n++
 			}
-			i = i + 1
+			i++
 		}
 		if n != 0 {
-			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
-			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
-			for x <= n {
-				fmt.Printf("%d/%d/%d %7d %7f kg %7d m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
-				x = x + 1
+			fmt.Println("Data yang ditemukan dengan preferensi tanggal, adalah:")
+			fmt.Printf("%-20s %-15s %-15s %-15s %-25s %-25s\n", "TANGGAL KUNJUNGAN", "ID KUNJUNGAN", "BERAT BADAN (kg)", "TINGGI BADAN (m)", "TEKANAN DARAH DISTOLIK (mmHg)", "TEKANAN DARAH SISTOLIK (mmHg)")
+			fmt.Println("==============================================================================================================")
+			for x < n {
+				datakesehatan := P[*sesi].datakesehatan[arrpencaritanggal[x]]
+				fmt.Printf("%02d/%02d/%04d %-15d %-15.2f %-15.2f %-25.2f %-25.2f\n",
+					datakesehatan.tanggalpengecekan.tanggal,
+					datakesehatan.tanggalpengecekan.bulan,
+					datakesehatan.tanggalpengecekan.tahun,
+					datakesehatan.idkunjungan,
+					datakesehatan.beratbadan,
+					datakesehatan.tinggibadan,
+					datakesehatan.tekanandarahdistolik,
+					datakesehatan.tekanandarahsistolik)
+				x++
 			}
 			fmt.Println("Masukkan data sesuai ID Kunjungan :")
 			fmt.Scan(&chunk_id)
@@ -745,7 +754,7 @@ func ubahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	//			1. ID kunjungan
 	//				pengguna memasukkan id kunjungan
 	//F.S :
-	var i, n, x int
+	var i, n, x int = 1, 0, 0
 	var chunk_tanggal, chunk_bulan, chunk_tahun int
 	var chunk_tanggalcari, chunk_bulancari, chunk_tahuncari int
 	var chunk_id int
@@ -827,7 +836,7 @@ func ubahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	} else {
 		fmt.Println("Masukkan tanggal kunjungan :")
 		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
-		for i < *dbk {
+		for i <= *dbk {
 			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
 				arrpencaritanggal[n] = i
 				n++
@@ -835,11 +844,21 @@ func ubahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 			i++
 		}
 		if n != 0 {
-			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
-			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
-			for x <= n {
-				fmt.Printf("%d/%d/%d %7d %7f kg %7f m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
-				x = x + 1
+			fmt.Println("Data yang ditemukan dengan preferensi tanggal, adalah:")
+			fmt.Printf("%-20s %-15s %-15s %-15s %-25s %-25s\n", "TANGGAL KUNJUNGAN", "ID KUNJUNGAN", "BERAT BADAN (kg)", "TINGGI BADAN (m)", "TEKANAN DARAH DISTOLIK (mmHg)", "TEKANAN DARAH SISTOLIK (mmHg)")
+			fmt.Println("==============================================================================================================")
+			for x < n {
+				datakesehatan := P[*sesi].datakesehatan[arrpencaritanggal[x]]
+				fmt.Printf("%02d/%02d/%04d %-15d %-15.2f %-15.2f %-25.2f %-25.2f\n",
+					datakesehatan.tanggalpengecekan.tanggal,
+					datakesehatan.tanggalpengecekan.bulan,
+					datakesehatan.tanggalpengecekan.tahun,
+					datakesehatan.idkunjungan,
+					datakesehatan.beratbadan,
+					datakesehatan.tinggibadan,
+					datakesehatan.tekanandarahdistolik,
+					datakesehatan.tekanandarahsistolik)
+				x++
 			}
 			fmt.Println("Masukkan data sesuai ID Kunjungan :")
 			fmt.Scan(&chunk_id)
@@ -914,6 +933,9 @@ func ubahdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 }
 
 func hapusdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
+	//I.S. : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang
+	//proses : pengguna memilih metode pencarian indeks arraykunjungan, yaitu berdasarkan ID dan tanggal kunjungan. Jika data ditemukan, patribut status pada kunjungan akan diubah nilai menjadi 2 (tidak aktif). Jika tidak, pengguna akan keluar dari prosedur
+	//F.S : datapasien masih ada, namun dengan status tidak aktif
 	var chunk_pemilihanmetodecari, chunk_idcari int
 	var chunk_tanggal, chunk_bulan, chunk_tahun int
 	var wantDeletedID int
@@ -940,6 +962,9 @@ func hapusdatakunjungan(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 }
 
 func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
+	//I.S. : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang
+	//proses : pengguna memasukkan tanggal, bulan, tahun kunjungan untuk mencari indeks array yang menyimpan data tsb. Jika data ditemukan, program akan menghitung BMI dan mengelompokkan kategori dan kelompok dari BMI dan tekanan darah dan menyimpannya dalam atribut diagnosaBMI dan diagnosatekanandarah.
+	//F.S : atribut diagnosaBMI dan diagnosatekanandarah diperbarui
 	var chunk_tanggalcari, chunk_bulancari, chunk_tahuncari int
 	var chunk_konfirmasipenggunaan int
 	var chunk_pemilihanmetodecari int
@@ -982,7 +1007,10 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 				} else if P[*sesi].datakesehatan[chunk_id].diagnosabmi.hasil >= 30 {
 					P[*sesi].datakesehatan[chunk_id].diagnosabmi.kelompok = "Gemuk"
 					P[*sesi].datakesehatan[chunk_id].diagnosabmi.kategori = "Kelebihan berat badan tingkat tinggi"
-				}  
+				} else {
+					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tidak Jelas"
+					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tidak Jelas"
+				}
 
 				// Diagnosa Tekanan Darah
 				if P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik < 90 && P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik < 60 {
@@ -997,6 +1025,9 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 				} else if P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik >= 140 && P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik >= 90 {
 					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tinggi"
 					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Hipertensi)"
+				} else {
+					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tidak Jelas"
+					P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tidak Jelas"
 				}
 				fmt.Println("Hasil cek kesehatan anda dengan keterangan : ")
 				fmt.Println("Kelompok : ", P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok)
@@ -1010,19 +1041,29 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 	} else if chunk_pemilihanmetodecari == 2 {
 		fmt.Println("Masukkan tanggal kunjungan :")
 		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
-		for i < *dbk {
+		for i <= *dbk {
 			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
 				arrpencaritanggal[n] = i
-				n = n + 1
+				n++
 			}
-			i = i + 1
+			i++
 		}
 		if n != 0 {
-			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
-			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
-			for x <= n {
-				fmt.Printf("%d/%d/%d %7d %7f kg %7d m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
-				x = x + 1
+			fmt.Println("Data yang ditemukan dengan preferensi tanggal, adalah:")
+			fmt.Printf("%-20s %-15s %-15s %-15s %-25s %-25s\n", "TANGGAL KUNJUNGAN", "ID KUNJUNGAN", "BERAT BADAN (kg)", "TINGGI BADAN (m)", "TEKANAN DARAH DISTOLIK (mmHg)", "TEKANAN DARAH SISTOLIK (mmHg)")
+			fmt.Println("==============================================================================================================")
+			for x < n {
+				datakesehatan := P[*sesi].datakesehatan[arrpencaritanggal[x]]
+				fmt.Printf("%02d/%02d/%04d %-15d %-15.2f %-15.2f %-25.2f %-25.2f\n",
+					datakesehatan.tanggalpengecekan.tanggal,
+					datakesehatan.tanggalpengecekan.bulan,
+					datakesehatan.tanggalpengecekan.tahun,
+					datakesehatan.idkunjungan,
+					datakesehatan.beratbadan,
+					datakesehatan.tinggibadan,
+					datakesehatan.tekanandarahdistolik,
+					datakesehatan.tekanandarahsistolik)
+				x++
 			}
 			fmt.Println("Masukkan data sesuai ID Kunjungan :")
 			fmt.Scan(&chunk_id)
@@ -1037,8 +1078,8 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 				fmt.Println("Gula Darah				: ", P[*sesi].datakesehatan[chunk_id].guladarah, "mg/dL")
 				fmt.Println("Apakah data yang ingin di gunakan benar?")
 				fmt.Scan(&chunk_konfirmasipenggunaan)
-					if chunk_konfirmasipenggunaan == 1 {
-						P[*sesi].datakesehatan[chunk_id].diagnosabmi.hasil = P[*sesi].datakesehatan[chunk_id].beratbadan / ((P[*sesi].datakesehatan[chunk_id].tinggibadan / 100) * (P[*sesi].datakesehatan[chunk_id].tinggibadan / 100))
+				if chunk_konfirmasipenggunaan == 1 {
+					P[*sesi].datakesehatan[chunk_id].diagnosabmi.hasil = P[*sesi].datakesehatan[chunk_id].beratbadan / ((P[*sesi].datakesehatan[chunk_id].tinggibadan / 100) * (P[*sesi].datakesehatan[chunk_id].tinggibadan / 100))
 					if P[*sesi].datakesehatan[chunk_id].diagnosabmi.hasil < 17 {
 						P[*sesi].datakesehatan[chunk_id].diagnosabmi.kelompok = "Kurus"
 						P[*sesi].datakesehatan[chunk_id].diagnosabmi.kategori = "Kekurangan berat badan tingkat rendah"
@@ -1054,7 +1095,10 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 					} else if P[*sesi].datakesehatan[chunk_id].diagnosabmi.hasil >= 30 {
 						P[*sesi].datakesehatan[chunk_id].diagnosabmi.kelompok = "Gemuk"
 						P[*sesi].datakesehatan[chunk_id].diagnosabmi.kategori = "Kelebihan berat badan tingkat tinggi"
-					}  
+					} else {
+						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tidak Jelas"
+						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tidak Jelas"
+					}
 
 					// Diagnosa Tekanan Darah
 					if P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik < 90 && P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik < 60 {
@@ -1069,6 +1113,9 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 					} else if P[*sesi].datakesehatan[chunk_id].tekanandarahsistolik >= 140 && P[*sesi].datakesehatan[chunk_id].tekanandarahdistolik >= 90 {
 						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tinggi"
 						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tekanan darah tinggi (Hipertensi)"
+					} else {
+						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok = "Tidak Jelas"
+						P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kategori = "Tidak Jelas"
 					}
 					fmt.Println("Hasil cek kesehatan anda dengan keterangan : ")
 					fmt.Println("Kelompok : ", P[*sesi].datakesehatan[chunk_id].diagnosatekanandarah.kelompok)
@@ -1088,6 +1135,10 @@ func cekkesehatan(P *atributpasien, dbk *int, dbc *int, sesi *int) {
 }
 
 func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
+	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang
+	// proses : pengguna memilih metode pencarian indeks arraykunjungan, yaitu berdasarkan ID dan tanggal kunjungan. Jika data ditemukan, program akan mengoutput arraykunjungan untuk memastikan pengguna apa benar data kunjungan yang dimaksud akan diolah. Jika iya, program akan mengelompokkan dan mengkategorikan hasil tekanan darah
+	//F.S : Jika berhasil, data akan disimpan di atribut diagnosaguladarah. Jika dibatalkan, maka program keluar dari prosedur
+	// var chunk_tanggal, chunk_bulan, chunk_tahun int
 	var chunk_tanggalcari, chunk_bulancari, chunk_tahuncari int
 	var chunk_konfirmasipenggunaan int
 	var chunk_pemilihanmetodecari int
@@ -1139,19 +1190,29 @@ func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 	} else if chunk_pemilihanmetodecari == 2 {
 		fmt.Println("Masukkan tanggal kunjungan :")
 		fmt.Scan(&chunk_tanggalcari, &chunk_bulancari, &chunk_tahuncari)
-		for i < *dbk {
+		for i <= *dbk {
 			if P[*sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggalcari && P[*sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulancari && P[*sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahuncari {
 				arrpencaritanggal[n] = i
-				n = n + 1
+				n++
 			}
-			i = i + 1
+			i++
 		}
 		if n != 0 {
-			fmt.Println("Data yang di temukan dengan prefrensi tanggal, adalah :")
-			fmt.Printf("TANGGAL KUNJUNGAN       ID KUNJUNGAN       BERAT BADAN       TINGGI BADAN       TEKANAN DARAH DISTOLIK       TEKANAN DARAH SISTOLIK")
-			for x <= n {
-				fmt.Printf("%d/%d/%d %7d %7f kg %7d m %7f mmHg %7f mmHg", P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tanggal, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.bulan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tanggalpengecekan.tahun, P[*sesi].datakesehatan[arrpencaritanggal[x]].idkunjungan, P[*sesi].datakesehatan[arrpencaritanggal[x]].beratbadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tinggibadan, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahdistolik, P[*sesi].datakesehatan[arrpencaritanggal[x]].tekanandarahsistolik)
-				x = x + 1
+			fmt.Println("Data yang ditemukan dengan preferensi tanggal, adalah:")
+			fmt.Printf("%-20s %-15s %-15s %-15s %-25s %-25s\n", "TANGGAL KUNJUNGAN", "ID KUNJUNGAN", "BERAT BADAN (kg)", "TINGGI BADAN (m)", "TEKANAN DARAH DISTOLIK (mmHg)", "TEKANAN DARAH SISTOLIK (mmHg)")
+			fmt.Println("==============================================================================================================")
+			for x < n {
+				datakesehatan := P[*sesi].datakesehatan[arrpencaritanggal[x]]
+				fmt.Printf("%02d/%02d/%04d %-15d %-15.2f %-15.2f %-25.2f %-25.2f\n",
+					datakesehatan.tanggalpengecekan.tanggal,
+					datakesehatan.tanggalpengecekan.bulan,
+					datakesehatan.tanggalpengecekan.tahun,
+					datakesehatan.idkunjungan,
+					datakesehatan.beratbadan,
+					datakesehatan.tinggibadan,
+					datakesehatan.tekanandarahdistolik,
+					datakesehatan.tekanandarahsistolik)
+				x++
 			}
 			fmt.Println("Masukkan data sesuai ID Kunjungan :")
 			fmt.Scan(&chunk_id)
@@ -1194,12 +1255,14 @@ func cekguladarah(P *atributpasien, dbc *int, dbk *int, sesi *int) {
 }
 
 func DisplayAkun(P atributpasien, dbc int) {
+	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc dan arraykunjungan sebagai atribut datapasien, sesi sebagai indikator id pasien yang dipakai sekarang. Program hanya bisa dijalankan oleh pengguna berstatus admin
+	// F.S : program akan mendisplay seluruh datapasien dan arraykunjungan pengguna
 	var n, i, m int
 	n = 0
 	m = 0
 	i = 1
 	fmt.Println("=============================================")
-	fmt.Println(i,"      LIST PASIEN RUMAH SAKIT TELKOM         ")
+	fmt.Println(i, "      LIST PASIEN RUMAH SAKIT TELKOM         ")
 	fmt.Println("=============================================")
 	for n < dbc {
 		fmt.Println("-----------------------------------------")
@@ -1209,7 +1272,7 @@ func DisplayAkun(P atributpasien, dbc int) {
 		fmt.Println("TTL :", P[m].tempatlahir, ",", P[m].tanggallahir.tanggal, P[m].tanggallahir.bulan, P[m].tanggallahir.tahun)
 		fmt.Println("Gender :", P[m].gender)
 		fmt.Println("Gender :", P[m].usia)
-		for P[m].datakesehatan[i].statusKunjungan != 2 && P[m].datakesehatan[i].statusKunjungan != 0{
+		for P[m].datakesehatan[i].statusKunjungan != 2 && P[m].datakesehatan[i].statusKunjungan != 0 {
 			fmt.Println("id Kunjungan: ", P[m].datakesehatan[i].idkunjungan)
 			fmt.Println("Tanggal Kunjungan: ", P[m].datakesehatan[i].tanggalpengecekan.tanggal, "/", P[m].datakesehatan[i].tanggalpengecekan.bulan, "/", P[m].datakesehatan[i].tanggalpengecekan.tahun)
 			fmt.Println("===============[Hasil Diagnosa]===============")
@@ -1236,6 +1299,9 @@ func DisplayAkun(P atributpasien, dbc int) {
 }
 
 func EditDatabasePasien(P *atributpasien, dbc int) {
+	//I.S. : terdefinisi array P bertipe atributpasien sebanyak dbc bilangan bulat
+	//proses : Pengguna akan memasukkan ID pasien yang akan diedit. ID dicari dengan sequential search. Jika ID ditemukan, maka program mengoutput akun pengguna. Lalu, pengguna memilih atribuut akun yang akan diedit. Lalu pengguna memasukkan input yang baru untuk atribut akun tersebut.
+	//F.S : Jika telah memenuhi syarat, makan akun pengguna berhasil di-update
 	var id int
 	var Pointedid int
 	var chc int
@@ -1288,14 +1354,17 @@ func EditDatabasePasien(P *atributpasien, dbc int) {
 }
 
 func cariAkunPasien(P atributpasien, dbc int) {
+	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc bilangan bulat
+	//proses : Masukkan ID yang mau diccari. ID dicari menggunakan binary search.
+	//F.S : Jika ID ditemukan, maka pengguna bisa memilih untuk menampilkan id dan masuk prosedur DisplayAkun_personal atau tidak menampilkan dan kembali ke prosedur
 	var IDtarget, idx int
 	var oldestRecord, BrandRecord, middle int
 	var found bool
 
 	idx = 0
 	found = false
-	oldestRecord = 0
-	BrandRecord = dbc - 1
+	oldestRecord = 1
+	BrandRecord = dbc
 	fmt.Println("------------------------------------------------")
 	fmt.Println("Masukkan ID pasien yang ingin kamu cari:")
 	fmt.Println("------------------------------------------------")
@@ -1304,7 +1373,7 @@ func cariAkunPasien(P atributpasien, dbc int) {
 
 	for oldestRecord <= BrandRecord && found == false {
 		middle = (oldestRecord + BrandRecord) / 2
-		if P[middle].idpasien == IDtarget {
+		if P[middle].idpasien == IDtarget && P[middle].status != 2 {
 			idx = middle
 			found = true
 		} else if P[middle].idpasien > IDtarget {
@@ -1314,14 +1383,14 @@ func cariAkunPasien(P atributpasien, dbc int) {
 		}
 	}
 	if found {
-		fmt.Println("ID ditemukan pada record pasien ke-", idx + 1, ". Apa data pasien mau ditampilkan")
+		fmt.Println("ID ditemukan pada record pasien ke-", idx, ". Apa data pasien mau ditampilkan")
 	}
 }
-
 
 // Subfungsi dan Tools
 
 func pengecektanggal(check_tanggal, check_bulan, check_tahun int) bool {
+	//Fungsi mengembalikan boolean yang berisi bila tanggal, bulan, dan tahun yang dimasukkan adalah valid
 	var validasi bool
 
 	if check_tahun > 0 {
@@ -1370,6 +1439,7 @@ func pengecektanggal(check_tanggal, check_bulan, check_tahun int) bool {
 	return validasi
 }
 func pencaridbsama(P atributpasien, dbc int, namadepan, namabelakang, tempatlahir string, tanggallahir, bulanlahir, tahunlahir int) int {
+	//fungsi mengembalikan integer yang bernilai indeks dari akun pasien yang memiliki nama depan, nama belankang, tanggal, bulan, dan tahun lahir yang sama. Fungsi mengembalikan -1 jika tidak ditemukan
 	var i int = 0
 
 	for i < dbc {
@@ -1382,6 +1452,7 @@ func pencaridbsama(P atributpasien, dbc int, namadepan, namabelakang, tempatlahi
 }
 
 func pencaristatuskosong(P atributpasien, dbc int) int {
+	//fungsi mengembalikan integer bernilai indeks dari akun yang memiliki atribut status == 2 {tidak aktif}
 	var i int
 	i = 0
 	for i < dbc {
@@ -1394,6 +1465,7 @@ func pencaristatuskosong(P atributpasien, dbc int) int {
 }
 
 func pencaritanggal(P atributpasien, dbc, dbk, sesi, chunk_tanggal, chunk_bulan, chunk_tahun int) int {
+	//fungsi mengembalikan indeks arraykunjungan yang memiliki tanggal, bulan dan tahun kunjungan yang sama dari variabel chunk
 	var i int = 1
 	for i <= dbk {
 		if P[sesi].datakesehatan[i].tanggalpengecekan.tanggal == chunk_tanggal && P[sesi].datakesehatan[i].tanggalpengecekan.bulan == chunk_bulan && P[sesi].datakesehatan[i].tanggalpengecekan.tahun == chunk_tahun {
@@ -1405,6 +1477,7 @@ func pencaritanggal(P atributpasien, dbc, dbk, sesi, chunk_tanggal, chunk_bulan,
 }
 
 func pencaridbkunjungankosong(P atributpasien, dbc, dbk, sesi int) int {
+	//fungsi mengembalikan integer bernilai indeks dari id kunjungan  yang memiliki atribut status == 2 {tidak aktif}
 	var dbkunjungankosong int
 	dbkunjungankosong = 0
 	for dbkunjungankosong <= dbc {
@@ -1417,6 +1490,8 @@ func pencaridbkunjungankosong(P atributpasien, dbc, dbk, sesi int) int {
 }
 
 func sortSelectionDesc(P atributpasien, dbc int) {
+	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc anggota
+	//F.S : dibuat array baru bernama ghostArray sebanyak idxghost yang merupakan hasil sorting selection descended dari P dan akan diteruskan ke prosedur DisplayAkun
 	var ghostArray atributpasien
 	var pass, i, idx, idxghost int
 	var temp datapasien
@@ -1442,6 +1517,8 @@ func sortSelectionDesc(P atributpasien, dbc int) {
 }
 
 func sortInsertionAsx(P atributpasien, dbc int) {
+	//I.S : terdefinisi array P bertipe atributpasien sebanyak dbc anggota
+	//F.S : dibuat array baru bernama ghostArray sebanyak idxghost yang merupakan hasil sorting Insertion AScended dari P dan akan diteruskan ke prosedur DisplayAkun
 	var pass, i, idxGoib int
 	var temp datapasien
 	var arrayGoib atributpasien
@@ -1464,6 +1541,8 @@ func sortInsertionAsx(P atributpasien, dbc int) {
 }
 
 func Sequentialsearch(P atributpasien, dbc int, x int) int {
+	// I.S : terdefinisi array P bertipe atributpasien sebanyak dbc anggota dan x yang menandakan id yang akan dicari
+	//F.S : prosedur mengembalikan indeks dari id akun pasien jika ditemukan. Jika tidak ditemukan, akan mengembalikan -1
 	var stopper bool
 	var i int
 	var indeX int
